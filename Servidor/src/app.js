@@ -24,9 +24,22 @@ app.post('/ingreso', (req, res) => {
     })
 })
 
-app.get('/registro',(req, res) => {
+app.post('/registro', (req, res) => {
     res.render('registro')
 });
+
+app.post('/listaCursos', (req, res) => {
+    res.render('listaCursos', {
+    	correo: req.body.correo,
+        cedula: parseInt(req.body.documento),
+        nombre: req.body.nombre,
+        telefono: req.body.telefono
+    })
+})
+
+app.get('/calculos',(req,res)=>{
+	res.render('calculos')
+})
 
 app.get('*', (req, res) => {
     res.render('error')
