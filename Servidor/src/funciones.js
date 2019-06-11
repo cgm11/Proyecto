@@ -35,7 +35,7 @@ const guardar = () => {
 	return mensaje;
 }
 
-const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad) =>{
+const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, callback) =>{
 	let resultado = "";
 	let crear = {
 		id: id,
