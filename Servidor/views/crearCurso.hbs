@@ -1,16 +1,16 @@
 <div class="container">
 {{>header}} 
 
-<form>
+<form action="/mostrarCursos" method="post">
     <br>
     <div class="row">
         <div class="col">
             <label>Id</label>
-            <input type="number" class="form-control" placeholder="Id del curso" name="id">
+            <input type="number" class="form-control" placeholder="Id del curso" name="id" required> 
         </div>
         <div class="col">
             <label>Nombre</label>
-            <input type="text" class="form-control" placeholder="Nombre del curso" name="nombre">
+            <input type="text" class="form-control" placeholder="Nombre del curso" name="nombre" required>
         </div>
     </div>
     <br>
@@ -25,14 +25,14 @@
         </div>
         <div class="col">
             <label>Valor</label>
-            <input type="text" class="form-control" placeholder="Valor" name="Valor">
+            <input type="text" class="form-control" placeholder="Valor" name="Valor" required>
         </div>
     </div>
     <br>
     <div class="row">
         <div class="col">
             <label>Descripción</label>
-            <textarea class="form-control" rows="3" name="descripcion"></textarea>
+            <textarea class="form-control" rows="3" name="descripcion" require></textarea>
         </div>
         <div class="col">
             <label>Intensidad horaria</label>

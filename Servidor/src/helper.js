@@ -9,3 +9,11 @@ hbs.registerHelper('registrarUsuario',(correo,cedula,nombre,telefono)=>{
     return "El resultado es: "+ resultado;
 
 })
+
+hbs.registerHelper('crearCursos',(id, nombre, modalidad, valor, descripcion, intensidad)=>{
+    
+    let resultado = funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad);
+    
+    return "El resultado es: "+ resultado;
+
+})

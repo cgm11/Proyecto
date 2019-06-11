@@ -45,6 +45,17 @@ app.post('/listaCursos', (req, res) => {
     })
 })
 
+app.post('/mostrarCursos', (req, res) => {
+    res.render('mostrarCursos', {
+    	id: parseInt(req.body.id),
+        nombre: req.body.nombre,
+        modalidad: req.body.modalidad,
+        valor: req.body.valor,
+        descripcion: req.body.descripcion,
+        intensidad: req.body.intensidad
+    })
+})
+
 app.get('/calculos',(req,res)=>{
 	res.render('calculos')
 })
