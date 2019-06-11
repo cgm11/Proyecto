@@ -9,11 +9,11 @@ const directoriopublico = path.join(__dirname, '../public');
 const directoriopartials = path.join(__dirname, '../partials');
 app.use(express.static(directoriopublico));
 hbs.registerPartials(directoriopartials);
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set('view engine', 'hbs');
 
-app.get('/',(req, res) => {
+app.get('/', (req, res) => {
     res.render('index')
 });
 
@@ -24,8 +24,16 @@ app.post('/ingreso', (req, res) => {
     })
 })
 
-app.get('/registro',(req, res) => {
+app.get('/registro', (req, res) => {
     res.render('registro')
+});
+
+app.get('/coordinador', (req, res) => {
+    res.render('coordinador')
+});
+
+app.get('/crearCurso', (req, res) => {
+    res.render('crearCurso')
 });
 
 app.get('*', (req, res) => {
