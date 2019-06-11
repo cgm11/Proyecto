@@ -36,6 +36,19 @@ app.get('/crearCurso', (req, res) => {
     res.render('crearCurso')
 });
 
+app.post('/listaCursos', (req, res) => {
+    res.render('listaCursos', {
+    	correo: req.body.correo,
+        cedula: parseInt(req.body.documento),
+        nombre: req.body.nombre,
+        telefono: req.body.telefono
+    })
+})
+
+app.get('/calculos',(req,res)=>{
+	res.render('calculos')
+})
+
 app.get('*', (req, res) => {
     res.render('error')
 })

@@ -1,28 +1,11 @@
-/*window.onload=function(){
- 
-    var usuario=new Object();
-    var arrayUsuario;
-    var arrayUs;
-    var nombre;
-    var documento;
-    var correo;
-    var telefono;
+const hbs = require('hbs');
+const funciones = require('./funciones');
 
-    document.getElementById("botonRegistrar").addEventListener("click",registrar);
 
-    function registrar(){
-        nombre=document.getElementById("txtNombre").value;
-        documento=document.getElementById("txtDocumento").value;
-        correo=document.getElementById("txtCorreo").value;
-        telefono=document.getElementById("txtTelefono").value;
-        usuario.codigo=codigoest;
-        usuario.nombre=nombreest;
-        usuario.notaest=notaest;
-        arrayUsuario=JSON.stringify(usuario);
-        document.write(objEstudiante);            
+hbs.registerHelper('registrarUsuario',(correo,cedula,nombre,telefono)=>{
+    
+    let resultado = funciones.intentoRegistro(correo,cedula,nombre,telefono);
+    
+    return "El resultado es: "+ resultado;
 
-    }
-
-    document.write(arrayUsuario);
-
-}*/
+})
