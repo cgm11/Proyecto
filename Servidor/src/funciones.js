@@ -84,6 +84,7 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 		intensidad: intensidad,
 		estado: estado
 	};
+	if(!id == null | !id == ""){
 	if (listaCursos.length >= 1) {
 		let duplicado = listaCursos.find(aux => aux.id == id)
 		if (!duplicado) {
@@ -104,6 +105,10 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 		guardarCurso();
 		resultado = "Curso creado con exito, nombre: "
 	}
+}else{
+	resultado = "No se guarda registro"
+	console.log('No se guarda registro')
+}
 	return resultado;
 }
 
@@ -172,8 +177,8 @@ const mostrarCursosAspirante = () => {
 				<div class="card"> \
 						<div class="card-header" id="heading' + cur.id + '">  \
 							<h2 class="mb-0"> \
-							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '"> ' +
-								'Nombre: ' + cur.nombre + '<br>Valor: ' + cur.valor +
+							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '" text-align: left> ' +
+								'Nombre: ' + cur.nombre + '<br>Valor: ' + cur.valor + '<br>Descripción: ' + cur.descripcion +
 							'</button> \
 							</h2> \
 						</div> \

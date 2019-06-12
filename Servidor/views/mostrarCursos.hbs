@@ -1,14 +1,13 @@
 <div class="container">
 {{>header}}
+{{>navCoordinador}}
 
 <p>
     Bienvenidos a la pagina de mostrar cursos
 </p>
+    
+{{crearCursos id nombre modalidad valor descripcion intensidad estado}}
 
-
-<p>
-El resultado del registro {{nombre}} fue exitoso  {{crearCursos id nombre modalidad valor descripcion intensidad estado}}
-</p>
    
    {{{crearTablaCursos}}}
    </div>
