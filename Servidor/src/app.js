@@ -24,7 +24,7 @@ app.post('/ingreso', (req, res) => {
     })
 })
 
-app.get('/registro', (req, res) => {
+app.post('/registro', (req, res) => {
     res.render('registro')
 });
 
@@ -50,15 +50,25 @@ app.post('/mostrarCursos', (req, res) => {
     	id: parseInt(req.body.id),
         nombre: req.body.nombre,
         modalidad: req.body.modalidad,
-        valor: req.body.valor,
+        valor: parseInt(req.body.valor),
         descripcion: req.body.descripcion,
-        intensidad: req.body.intensidad
+        intensidad: parseInt(req.body.intensidad),
+        estado: "Disponible"
     })
 })
 
 app.get('/calculos',(req,res)=>{
 	res.render('calculos')
 })
+
+app.get('/aspirante', (req, res) => {
+    res.render('aspirante', {
+    	correo: req.body.correo,
+        cedula: parseInt(req.body.documento),
+        nombre: req.body.nombre,
+        telefono: req.body.telefono
+    })
+});
 
 app.get('*', (req, res) => {
     res.render('error')

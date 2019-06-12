@@ -10,10 +10,17 @@ hbs.registerHelper('registrarUsuario',(correo,cedula,nombre,telefono)=>{
 
 })
 
-hbs.registerHelper('crearCursos',(id, nombre, modalidad, valor, descripcion, intensidad)=>{
+hbs.registerHelper('crearCursos',(id, nombre, modalidad, valor, descripcion, intensidad, estado)=>{    
     
-    let resultado = funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad);
-    
-    return "El resultado es: "+ resultado;
+    funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad, estado);
+})
 
+hbs.registerHelper('crearTablaCursos',() => {
+    let resultado =  funciones.crearTablaCursos();
+    return resultado;
+})
+
+hbs.registerHelper('mostrarCursosAspirante',() => {
+    let resultado =  funciones.mostrarCursosAspirante();
+    return resultado;
 })
