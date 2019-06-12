@@ -33,12 +33,12 @@ app.post('/ingreso', (req, res) => {
         	let rolEncontrado = funciones.retornarRol(loginData);
         	if(rolEncontrado=="aspirante")
         		{
-        			res.render('ingreso', {
+        			res.render('aspirante', {
        		 		correo: req.body.correo,
         			cedula: parseInt(req.body.documento)
     				})
         		}else{
-        			res.render('ingreso', {
+        			res.render('coordinador', {
        		 		correo: req.body.correo,
         			cedula: parseInt(req.body.documento)
     				})
@@ -88,7 +88,7 @@ app.post('/listaCursos', (req, res) => {
 	  }
 	});
 
-app.post('/mostrarCursos', (req, res) => {
+app.get('/mostrarCursos', (req, res) => {
     res.render('mostrarCursos', {
     	id: parseInt(req.body.id),
         nombre: req.body.nombre,
@@ -112,6 +112,11 @@ app.get('/aspirante', (req, res) => {
         telefono: req.body.telefono
     })
 });
+
+app.get('/editarUsuario', (req, res) => {
+    res.render('editarUsuario')
+});
+
 
 app.get('*', (req, res) => {
     res.render('error')

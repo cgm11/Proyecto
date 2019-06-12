@@ -17,8 +17,9 @@ return resultado;
 });
 
 hbs.registerHelper('crearCursos',(id, nombre, modalidad, valor, descripcion, intensidad, estado)=>{    
-    
-    funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad, estado);
+    var resultado = "";
+    resultado = funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad, estado);
+    return resultado;
 })
 
 hbs.registerHelper('crearTablaCursos',() => {
@@ -28,5 +29,10 @@ hbs.registerHelper('crearTablaCursos',() => {
 
 hbs.registerHelper('mostrarCursosAspirante',() => {
     let resultado =  funciones.mostrarCursosAspirante();
+    return resultado;
+})
+
+hbs.registerHelper('listarUsuarios',() => {
+    let resultado =  funciones.mostrarUsuarios();
     return resultado;
 })
