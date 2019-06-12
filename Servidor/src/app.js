@@ -31,12 +31,13 @@ app.post('/ingreso', (req, res) => {
         if(response != null)
         {
         	let rolEncontrado = funciones.retornarRol(loginData);
-        	if(rolEncontrado=="aspirante"){
+        	if(rolEncontrado=="aspirante")
+        		{
         			res.render('aspirante', {
        		 		correo: req.body.correo,
         			cedula: parseInt(req.body.documento)
     				})
-        	}else{
+        		}else{
         			res.render('coordinador', {
        		 		correo: req.body.correo,
         			cedula: parseInt(req.body.documento)
@@ -85,9 +86,7 @@ app.post('/listaCursos', (req, res) => {
         mensajeUsuario: "USUARIO YA REGISTRADO"
     	});
 	  }
-	});
-
-   
+	});  
 
 
 app.post('/mostrarCursos', (req, res) => {
@@ -126,6 +125,11 @@ app.get('/aspirante', (req, res) => {
         telefono: req.body.telefono
     })
 });
+
+app.get('/editarUsuario', (req, res) => {
+    res.render('editarUsuario')
+});
+
 
 app.get('*', (req, res) => {
     res.render('error')

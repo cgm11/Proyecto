@@ -74,6 +74,7 @@ const listar = ()=>{
 
 const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, estado) => {
 	listarOtro();
+	let respuestaNew="";
 	let resultado = "";
 	let crear = {
 		id: id,
@@ -90,9 +91,9 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 		if (!duplicado) {
 			listaCursos.push(crear);
 			console.log("ENTRO A DUPLICADO");
-			guardarCurso();
+			respuestaNew = guardarCurso();
 			resultado = "Curso creado con exito, nombre: "
-			console.log('valor de resultado: ' + resultado);
+			console.log('valor de resultado: ' + resultado+" y respuestaNew: "+respuestaNew);
 
 		} else {
 			console.log("Ya existe el id");
@@ -102,8 +103,9 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 		listaCursos.push(crear);
 		console.log("ENTRO A NUEVO");
 		console.log(listaCursos);
-		guardarCurso();
-		resultado = "Curso creado con exito, nombre: "
+		respuestaNew = guardarCurso();
+		resultado = "Curso creado con exito, nombre: ";
+		console.log('valor de resultado: ' + resultado+" y respuestaNew: "+respuestaNew);
 	}
 }else{
 	resultado = "No se guarda registro"
@@ -113,12 +115,15 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 }
 
 const guardarCurso = () => {
+	let mensaje='prueba';
 	let datos = JSON.stringify(listaCursos);
+	mensaje='exitoso';
 	fs.writeFile('ListadoCursos.json', datos, (err) => {
 		if (err) throw (err)
 		console.log('Archivo creado con exito, valor de mensaje: ');
 
 	})
+	return mensaje;
 }
 
 const listarOtro= () => {
@@ -199,6 +204,37 @@ const mostrarCursosAspirante = () => {
 	}
 }
 
+const mostrarUsuarios = () => {
+	try {
+		console.log("Entro a mostrarUsuarios");
+		listar();
+		console.log("Paso listar");
+		let texto = "<table class='table table-striped table-bordered'> \
+					<thead> \
+					<th> Cedula </th> \
+					<th> Nombre </th> \
+					<th> Correo </th> \
+					<th> Telefono </th> \
+					<th> Rol </th> \
+					</thead> \
+					<tbody>";
+		listaUsuarios.forEach(user => {
+			texto = texto +
+				'<tr>' +
+				'<td>' + user.cedula + '</td>' +
+				'<td>' + user.nombre + '</td>' +
+				'<td>' + user.correo + '</td>' +
+				'<td>' + user.telefono + '</td>' +
+				'<td>' + user.rol + '</td></tr>'
+		})
+		texto = texto + '</tbody></table>';
+		return texto;
+	} catch (error) {
+		console.log("catch");
+		return "Error";
+	}
+}
+
 
 
 module.exports = {
@@ -212,5 +248,6 @@ module.exports = {
 	crearTablaCursos,
 	mostrarCursosAspirante,
 	buscarDuplicado,
-	retornarRol
+	retornarRol,
+	mostrarUsuarios
 }
