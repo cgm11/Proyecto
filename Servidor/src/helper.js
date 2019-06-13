@@ -36,3 +36,10 @@ hbs.registerHelper('listarUsuarios',() => {
     let resultado =  funciones.mostrarUsuarios();
     return resultado;
 })
+
+hbs.registerHelper('matricularUsuario',(id, cedula)=>{    
+    console.log('Id: '+ id + 'cedula: '+cedula);
+    var resultado = "";
+    resultado = funciones.matricularUsuario(id, cedula);
+    return resultado;
+})

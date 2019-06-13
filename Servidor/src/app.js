@@ -117,7 +117,16 @@ app.get('/calculos',(req,res)=>{
 	res.render('calculos')
 })
 
+app.post('/aspirante', (req, res) => {
+    console.log('Entro a post');
+    res.render('aspirante', {        
+    	id: parseInt(req.body.id),
+        cedula1: parseInt(req.body.cedula1)
+    })
+});
+
 app.get('/aspirante', (req, res) => {
+    console.log('Entro a get');
     res.render('aspirante', {
     	correo: req.body.correo,
         cedula: parseInt(req.body.documento),
