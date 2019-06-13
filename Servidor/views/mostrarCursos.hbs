@@ -7,7 +7,35 @@
 </p>
     
 {{crearCursos id nombre modalidad valor descripcion intensidad estado}}
-
+{{mensajeEditarCurso}}
    
-   {{{crearTablaCursos}}}
-   </div>
+{{{crearTablaCursos}}}
+</div>
+{{EditarCurso idCurso estado}}
+<p>
+    Editar curso
+</p>
+<form action="/mostrarCursos" method="POST">
+    <br>
+    <div class="row">
+        <div class="col">
+            <label>Id Curso</label>
+            <input type="number" class="form-control" placeholder="Id curso" name="idCurso" required> 
+        </div>
+        <div class="col">
+            <label>Estado</label>
+            <select class="form-control" name="estado">
+                <option>-</option>
+                <option>Disponible</option>
+                <option>Cerrado</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+    	<div class="col">
+    		<label>     </label>
+        	<div class="form-group">
+        	<br><button>Editar</button>
+        </div>
+    </div> 
+</form>

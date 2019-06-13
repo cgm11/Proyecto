@@ -36,3 +36,8 @@ hbs.registerHelper('listarUsuarios',() => {
     let resultado =  funciones.mostrarUsuarios();
     return resultado;
 })
+
+hbs.registerHelper('EditarCurso',() => {
+    let resultado =  funciones.editarCurso();
+    return resultado;
+})

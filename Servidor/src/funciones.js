@@ -91,25 +91,25 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 		let duplicado = listaCursos.find(aux => aux.id == id)
 		if (!duplicado) {
 			listaCursos.push(crear);
-			console.log("ENTRO A DUPLICADO");
+			//console.log("ENTRO A DUPLICADO");
 			respuestaNew = guardarCurso();
-			resultado = "Curso creado con exito, nombre: "
-			console.log('valor de resultado: ' + resultado+" y respuestaNew: "+respuestaNew);
+			resultado = "Curso creado con exito"
+			//console.log('valor de resultado: ' + resultado+" y respuestaNew: "+respuestaNew);
 
 		} else {
-			console.log("Ya existe el id");
-			resultado = "Ya existe el id, por favor validar"
+			//console.log("Ya existe el id");
+			resultado = "Ya existe el id del curso, por favor validar"
 		}
 	} else {
 		listaCursos.push(crear);
-		console.log("ENTRO A NUEVO");
-		console.log(listaCursos);
+		//console.log("ENTRO A NUEVO");
+		//console.log(listaCursos);
 		respuestaNew = guardarCurso();
-		resultado = "Curso creado con exito, nombre: ";
-		console.log('valor de resultado: ' + resultado+" y respuestaNew: "+respuestaNew);
+		resultado = "Curso creado con exito";
+		//console.log('valor de resultado: ' + resultado+" y respuestaNew: "+respuestaNew);
 	}
 }else{
-	resultado = "No se guarda registro"
+	resultado = "";
 	console.log('No se guarda registro')
 }
 	return resultado;
@@ -265,6 +265,32 @@ const actualizarUsuario = (cedula,nombreNew,correoNew,telefonoNew,rolNew) =>{
 		return ('Resultado editar: '+mensajeRetorno);
 }
 
+const editarCurso = (idCurso, estadoNew) =>{
+	try {
+		listarOtro();
+		let mensajeRetorno = '';
+		let existe = listaCursos.find(nom => nom.id == idCurso)
+		if(existe){
+			if(estadoNew!=null && estadoNew!=""&&estadoNew!="-")
+			{let estado="estado";
+			console.log('valores de existe, estado '+existe.estado);
+			existe[estado]=estadoNew;}
+			mensajeRetorno = guardarCurso();
+			mensajeRetorno = 'Resultado editar: '+ mensajeRetorno;
+		}else{
+			if(isNaN(idCurso)){
+				mensajeRetorno = '';
+			}else{
+				console.log('No hay curso con ese id');
+				mensajeRetorno = 'Resultado editar: '+ 'Cambio no exitoso, no hay curso con ese id';}
+		}
+		return mensajeRetorno;
+	}catch{
+		mensajeRetorno = 'Error, favor consulta con un admin';
+		return mensajeRetorno;
+	}
+}
+
 module.exports = {
 	registrarUsuario,
 	intentoRegistro,
@@ -278,5 +304,6 @@ module.exports = {
 	buscarDuplicado,
 	retornarRol,
 	mostrarUsuarios,
-	actualizarUsuario
+	actualizarUsuario,
+	editarCurso
 }

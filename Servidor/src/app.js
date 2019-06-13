@@ -90,6 +90,16 @@ app.post('/listaCursos', (req, res) => {
 
 
 app.post('/mostrarCursos', (req, res) => {
+    let mensajeEditarCurso = '';
+    let loginData ={
+        idCurso: parseInt(req.body.idCurso),
+        estado: req.body.estado
+    }
+
+    if (!isNaN(loginData.idCurso)){
+        console.log("Entre a Editar curso");
+        mensajeEditarCurso = funciones.editarCurso(loginData.idCurso,loginData.estado);
+    }
     res.render('mostrarCursos', {
     	id: parseInt(req.body.id),
         nombre: req.body.nombre,
@@ -97,7 +107,8 @@ app.post('/mostrarCursos', (req, res) => {
         valor: parseInt(req.body.valor),
         descripcion: req.body.descripcion,
         intensidad: parseInt(req.body.intensidad),
-        estado: "Disponible"
+        estado: "Disponible",
+        mensajeEditarCurso: mensajeEditarCurso
     })
 })
 
