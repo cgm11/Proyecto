@@ -1,6 +1,7 @@
 listaUsuarios = [];
 listaCursos = [];
 const fs = require('fs');
+
 let intentoRegistro =  (correo, cedula, nombre,telefono, rol, callback) =>{
 	let resultado1="";
 	registrarUsuario(correo, cedula, nombre,telefono, rol, function(resultado2)
@@ -182,7 +183,7 @@ const mostrarCursosAspirante = () => {
 				<div class="card"> \
 						<div class="card-header" id="heading' + cur.id + '">  \
 							<h2 class="mb-0"> \
-							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '" text-align: left> ' +
+							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '">' +
 								'Nombre: ' + cur.nombre + '<br>Valor: ' + cur.valor + '<br>Descripción: ' + cur.descripcion +
 							'</button> \
 							</h2> \

@@ -148,7 +148,6 @@ app.get('/editarUsuario', (req, res) => {
     res.render('editarUsuario')
 })
 
-
 app.get('*', (req, res) => {
     res.render('error')
 })
