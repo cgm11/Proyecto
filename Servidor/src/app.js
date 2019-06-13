@@ -27,7 +27,7 @@ app.post('/ingreso', (req, res) => {
         cedula: parseInt(req.body.documento),
         }
         let response = funciones.buscarDuplicado( loginData );
-        console.log('el resultado de response es: '+response);
+        //console.log('el resultado de response es: '+response);
         if(response != null)
         {
         	let rolEncontrado = funciones.retornarRol(loginData);
@@ -71,7 +71,7 @@ app.post('/listaCursos', (req, res) => {
         nombre: req.body.nombre,
         telefono: req.body.telefono,}
         let response = funciones.buscarDuplicado( loginData );
-        console.log('el resultado de response es: '+response);
+        //console.log('el resultado de response es: '+response);
         if(response == null){
         	res.render('listaCursos', {
         			nombre: req.body.nombre,
@@ -126,9 +126,27 @@ app.get('/aspirante', (req, res) => {
     })
 });
 
+app.post('/editarUsuario', (req, res) => {
+    let mensajeEditarUsuario='';
+    let loginData ={    
+        correo: req.body.correo,
+        cedula: parseInt(req.body.cedula),
+        nombre: req.body.nombre,
+        telefono: req.body.telefono,
+        rol: req.body.rol
+    }
+    console.log("valor de cedula: "+loginData.cedula)
+    if (!isNaN(loginData.cedula)){
+        console.log("Entre a Editar usuario");
+        mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula,loginData.nombre,loginData.correo,loginData.telefono,loginData.rol);
+    }
+    res.render('editarUsuario',{
+        mensajeEditarUsuario: mensajeEditarUsuario
+    })
+});
 app.get('/editarUsuario', (req, res) => {
     res.render('editarUsuario')
-});
+})
 
 app.get('*', (req, res) => {
     res.render('error')

@@ -1,7 +1,6 @@
 listaUsuarios = [];
 listaCursos = [];
 const fs = require('fs');
-const EventEmitter = require('events');
 
 let intentoRegistro =  (correo, cedula, nombre,telefono, rol, callback) =>{
 	let resultado1="";
@@ -39,7 +38,7 @@ const registrarUsuario = (correo, cedula, nombre,telefono, rol,callback) =>{
 const buscarDuplicado = (data) => {
 	listar();
 	let busquedaDuplicado = listaUsuarios.find(nom => nom.cedula == data.cedula)
-    console.log("valor de busquedaDuplicado: "+ busquedaDuplicado);
+    //console.log("valor de busquedaDuplicado: "+ busquedaDuplicado);
     return busquedaDuplicado;
 }
 
@@ -237,6 +236,35 @@ const mostrarUsuarios = () => {
 	}
 }
 
+const actualizarUsuario = (cedula,nombreNew,correoNew,telefonoNew,rolNew) =>{
+	let mensajeRetorno = '';
+	listar()
+	let existe = listaUsuarios.find(nom => nom.cedula == cedula)
+	if(existe){
+		if(nombreNew!=null && nombreNew!="")
+			{let nombre="nombre";
+			console.log('valores de existe, nombre '+existe.nombre);
+			existe[nombre]=nombreNew;}
+		if(correoNew!=null && correoNew!="")
+			{let correo="correo";
+			console.log('valores de existe, correo '+existe.correo);
+			existe[correo]=correoNew;}
+		if(telefonoNew!=null && telefonoNew!="")
+			{let telefono="telefono";
+			console.log('valores de existe, telefono '+existe.telefono);
+			existe[telefono]=telefonoNew;}
+		if(rolNew!=null && rolNew!=""&&rolNew!="-")
+			{let rol="rol";
+			console.log('valores de existe, rol '+existe.rol);
+			existe[rol]=rolNew;}
+		mensajeRetorno = guardar()
+	}else{
+		console.log('No hay usuario con esa cedula');
+		mensajeRetorno = 'Cambio no exitoso, no hay usuario con esa cedula';
+		}
+		return ('Resultado editar: '+mensajeRetorno);
+}
+
 module.exports = {
 	registrarUsuario,
 	intentoRegistro,
@@ -249,5 +277,6 @@ module.exports = {
 	mostrarCursosAspirante,
 	buscarDuplicado,
 	retornarRol,
-	mostrarUsuarios
+	mostrarUsuarios,
+	actualizarUsuario
 }
