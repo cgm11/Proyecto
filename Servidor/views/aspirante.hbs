@@ -1,9 +1,36 @@
 <div class="container">
     {{>header}}
+    {{>navAspirante}}
     <br>
     <h1>Cursos disponibles</h1>
     <br>
-    {{{mostrarCursosAspirante}}}   
+
+    {{{mostrarCursosAspirante}}}
+    {{matricularUsuario id cedula1}}
+
+    <br>
+    <h1>Matriculas</h1>
+    <form action="/aspirante" id= 'matricula' method="POST">
+        <br>
+        <div class="row">
+            <div class="col">
+                <label>Indique el id del curso al que se quiere matricular</label>
+                <input type="number" class="form-control" placeholder="Id curso" name="id" required>
+            </div>
+            <div class="col">
+                <label>Documento de identidad</label>
+                <input type="number" class="form-control" placeholder="" name="cedula1" required>
+            </div>
+        </div>
+            <div class="form-group">
+                <br><button>Inscribir</button>
+            </div>
+    </form>
+
+    <script>
+function displayResult() {
+    let cedula1 = {{cedula}}
+}
+</script>
 
     {{>footer}}
-</div>
