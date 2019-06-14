@@ -161,11 +161,26 @@ app.get('/calculos', (req, res) => {
 
 app.post('/aspirante', (req, res) => {
     console.log('Entro a post');
-    res.render('aspirante', {
+    let mensajeVerInscritos = '';
+    let mensajeVerInscritosEliminar = '';
+    let loginData = {
         id: parseInt(req.body.id),
         idEliminar: parseInt(req.body.idEliminar)
+    }
+    console.log('idCursoVer: '+loginData.idCursoVer+', cedula: '+loginData.cedula+' y idCurso: '+loginData.idCurso);
+    if (!isNaN(loginData.idEliminar)){
+        console.log("Entre a mensajeVerInscritosEliminar ");
+        mensajeVerInscritosEliminar = funciones.EliminarInscripcionAspirante(loginData.idEliminar);
+                console.log('valor de mensajeVerInscritosEliminar: '+mensajeVerInscritosEliminar);
+                console.log("Entre a mensajeVerInscritos curso");
+    }
+    res.render('aspirante', {
+        id: parseInt(req.body.id),
+        idEliminar: parseInt(req.body.idEliminar),
+        mensajeVerInscritosEliminar: mensajeVerInscritosEliminar
     })
 });
+
 
 /*app.get('/aspirante', (req, res) => {
     //console.log('Entro a get');

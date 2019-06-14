@@ -1,11 +1,12 @@
 <div class="container">
 {{>header}}
 {{>navCoordinador}}
-
-<p>
+<br>
+<h4>
     Bienvenidos a la pagina para editar los usuarios
-</p>
-{{mensajeEditarUsuario}}
+</h4>
+<br>
+<b>{{mensajeEditarUsuario}}</b>
 {{{listarUsuarios}}}
 
 <form action="/editarUsuario" method="POST">
