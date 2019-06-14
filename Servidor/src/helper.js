@@ -27,6 +27,11 @@ hbs.registerHelper('crearTablaCursos',() => {
     return resultado;
 })
 
+hbs.registerHelper('crearTablaCursosDisponibles',() => {
+    let resultado =  funciones.crearTablaCursosDisponibles();
+    return resultado;
+})
+
 hbs.registerHelper('mostrarCursosAspirante',() => {
     let resultado =  funciones.mostrarCursosAspirante();
     return resultado;
@@ -37,16 +42,16 @@ hbs.registerHelper('listarUsuarios',() => {
     return resultado;
 })
 
-<<<<<<< HEAD
+
 hbs.registerHelper('EditarCurso',() => {
     let resultado =  funciones.editarCurso();
     return resultado;
 })
-=======
+
 hbs.registerHelper('matricularUsuario',(id, cedula)=>{    
     console.log('Id: '+ id + 'cedula: '+cedula);
     var resultado = "";
     resultado = funciones.matricularUsuario(id, cedula);
     return resultado;
 })
->>>>>>> Branch_Carola
+
