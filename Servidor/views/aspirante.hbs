@@ -1,0 +1,52 @@
+<div class="container" id="inicio">
+    {{>header}}
+    {{>navAspirante}}
+    <br>
+    <h1>Cursos disponibles</h1>
+    <br>
+
+    {{{mostrarCursosAspirante}}}
+
+
+
+    <br>
+    <h1 id='matricula'>Matriculas</h1>
+    <b> {{matricularUsuario id}} </b>
+    <form action="/aspirante#matricula" method="POST">
+        <div class="row">
+            <div class="col">
+                <label>Indique el id del curso al que se quiere matricular</label>
+                <input type="number" class="form-control" placeholder="Id curso" name="id" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <br><button>Inscribir</button>
+        </div>
+    </form>
+
+    <br>
+    <h1>Mis cursos</h1>
+    <form action="/aspirante#misCursos" id='misCursos' method="POST">
+        <div class="form-group">
+            <br><button>Consultar</button>
+        </div>
+    </form>
+    {{{misCursos}}}
+
+    <br>
+    <h1 id='Eliminar'>Eliminar un curso</h1>
+    <b> {{mensajeVerInscritosEliminar}} </b>
+    <form action="/aspirante#matricula" method="POST">
+        <div class="row">
+            <div class="col">
+                <label>Indique el id del curso que desea eliminar</label>
+                <input type="number" class="form-control" placeholder="Id curso" name="idEliminar" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <br><button>Eliminar</button>
+        </div>
+    </form>
+    
+    {{>footer}}
+</div>

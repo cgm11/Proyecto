@@ -1,28 +1,61 @@
-/*window.onload=function(){
- 
-    var usuario=new Object();
-    var arrayUsuario;
-    var arrayUs;
-    var nombre;
-    var documento;
-    var correo;
-    var telefono;
+const hbs = require('hbs');
+const funciones = require('./funciones');
+listaUsuarios = [];
+const fs = require('fs');
 
-    document.getElementById("botonRegistrar").addEventListener("click",registrar);
+hbs.registerHelper('registrarUsuario',(correo,cedula,nombre,telefono)=>{
+    var resultado = "";
+    funciones.intentoRegistro(correo,cedula,nombre,telefono,"aspirante",function (result)
+    {
+    console.log('valor de resultado final es: '+result);
+    resultado = result;
+    return ("El resultado es: "+ resultado);
+    })
 
-    function registrar(){
-        nombre=document.getElementById("txtNombre").value;
-        documento=document.getElementById("txtDocumento").value;
-        correo=document.getElementById("txtCorreo").value;
-        telefono=document.getElementById("txtTelefono").value;
-        usuario.codigo=codigoest;
-        usuario.nombre=nombreest;
-        usuario.notaest=notaest;
-        arrayUsuario=JSON.stringify(usuario);
-        document.write(objEstudiante);            
+return resultado;
 
-    }
+});
 
-    document.write(arrayUsuario);
+hbs.registerHelper('crearCursos',(id, nombre, modalidad, valor, descripcion, intensidad, estado)=>{    
+    var resultado = "";
+    resultado = funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad, estado);
+    return resultado;
+})
 
-}*/
+hbs.registerHelper('crearTablaCursos',() => {
+    let resultado =  funciones.crearTablaCursos();
+    return resultado;
+})
+
+hbs.registerHelper('crearTablaCursosDisponibles',() => {
+    let resultado =  funciones.crearTablaCursosDisponibles();
+    return resultado;
+})
+
+hbs.registerHelper('mostrarCursosAspirante',() => {
+    let resultado =  funciones.mostrarCursosAspirante();
+    return resultado;
+})
+
+hbs.registerHelper('listarUsuarios',() => {
+    let resultado =  funciones.mostrarUsuarios();
+    return resultado;
+})
+
+hbs.registerHelper('EditarCurso',() => {
+    let resultado =  funciones.editarCurso();
+    return resultado;
+})
+
+hbs.registerHelper('matricularUsuario',(id)=>{    
+    var resultado = "";
+    resultado = funciones.matricularUsuario(id);
+    return resultado;
+})
+
+hbs.registerHelper('misCursos',()=>{    
+    var resultado = "";
+    resultado = funciones.mostrarMisCursos();
+    return resultado;
+})
+

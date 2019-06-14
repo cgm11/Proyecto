@@ -1,0 +1,60 @@
+<div class="container">
+{{>header}}
+{{>navCoordinador}}
+<br>
+<h4>
+    Bienvenidos a la pagina de mostrar cursos disponibles e inscritos
+</h4>
+<br>
+{{{crearTablaCursosDisponibles}}}
+
+{{mensajeError}}
+<br>
+<p>
+    <b>Para ver los inscritos ingrese el id del curso</b>
+</p>
+<form action="/verInscritos" method="POST">
+    <div class="row">
+        <div class="col">
+            <label>Id Curso</label>
+            <input type="number" class="form-control" placeholder="Id curso" name="idCurso" required> 
+        </div>
+        
+    </div>
+    <div class="row">
+    	<div class="col">
+    		<label>     </label>
+        	<div class="form-group">
+        	<br><button>Ver inscritos</button>
+        </div>
+    </div> 
+</form>
+
+{{{mensajeVerInscritos}}}
+</div>
+<p>
+    <b>Para eliminar los aspirantes inscritos ingrese el id del curso y el numero de cedula del aspirante</b>
+</p>
+<form action="/verInscritos" method="POST">
+    <div class="row">
+        <div class="col">
+            <label>Id Curso</label>
+            <input type="number" class="form-control" placeholder="Id curso" name="idCurso" required> 
+        </div>
+        <div class="col">
+            <label>Cedula aspirante</label>
+            <input type="number" class="form-control" placeholder="Cedula" name="cedulaUsuario" required> 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>     </label>
+            <div class="form-group">
+            <br><button>Eliminar Aspirante</button>
+        </div>
+    </div> 
+</form>
+</div>
+
+<b>{{mensajeVerInscritosEliminar}}</b>
+
