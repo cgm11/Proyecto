@@ -222,19 +222,16 @@ const VerInscritos = (idCurso) => {
 		listarMatriculas();
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
-		console.log('valor de id: '+idCurso);
+		//console.log('valor de id: '+existe.id)})
 		let texto = '<table class="table table-striped table-bordered"> \
 					<thead> \
-					<th> Id Curso </th> \
 					<th> Cedula </th> \
 					</thead> \
 					<tbody>';
 		listarMatricula.forEach(cur => {
-			console.log('valor de cur.id: '+cur.id+' y idCurso: '+idCurso)
 			if(cur.id == idCurso){
 			texto = texto +
 				'<tr>' +
-				'<td>' + cur.id + '</td>' +
 				'<td>' + cur.cedula + '</td></tr>'}
 		})
 		texto = texto + '</tbody></table>';
@@ -351,26 +348,18 @@ const mensajeVerInscritosEliminar = (idCurso, cedula) =>{
 	//	})
 	let existe = listarMatricula.find(nom => nom.id == idCurso && nom.cedula == cedula);
 	if(existe){
-		var index = listarMatricula.indexOf(existe);
-		console.log('valor de index: '+index);
-		if (index > -1) {
-   			listarMatricula.splice(index, 1);
-						}
-		//let filterNew = listarMatricula.filter(nom => ((nom.id !== idCurso) || (nom.cedula !== cedula)));
+		let filterNew = listarMatricula.filter(nom => ((nom.id !== idCurso) || (nom.cedula !== cedula)));
 	//	filterNew.forEach(user => {
 	//		console.log('quedo elemento con idCurso: '+user.id+' y cedula: '+user.cedula)
 	//	})
-		mensajeRetorno = guardarMatricula();
-	//	mensajeRetorno = 'Eliminado exitosamente!!';
-		//if(filterNew.length == listarMatricula.length){
-		//console.log('no se elimino a nadie');
-		//mensajeRetorno = 'no se elimino a nadie';
-		//}else{
-		//listarMatricula = filterNew;
-
-		//mensajeRetorno = guardarMatricula();
+		if(filterNew.length == listarMatricula.length){
+		console.log('no se elimino a nadie');
+		mensajeRetorno = 'no se elimino a nadie';
+		}else{
+		listarMatricula = filterNew;
+		guardarMatricula()
 		mensajeRetorno = 'Eliminado exitosamente!!';
-		//}
+		}
 	}else{
 		mensajeRetorno = 'No hay registros con el id y cedula ingresados para eliminar';
 	}
@@ -382,7 +371,6 @@ return 	mensajeRetorno;
 const listarMatriculas = () => {
 	try {
 		listarMatricula = require('../ListaInscritos.json');
-		console.log("Entre a listarMatricula");
 	} catch (error) {
 		listarMatricula = [];
 	}
@@ -514,6 +502,7 @@ const editarCurso = (idCurso, estadoNew) => {
 					console.log("se salto if");
 				}
 			})
+			listarMatricula = [];
 			texto = texto + '</tbody></table>';
 			if(aux == ''){
 				return '<b>No tiene ningún curso asociado</b><br><br>';
@@ -536,6 +525,42 @@ const editarCurso = (idCurso, estadoNew) => {
 		console.log("ENTRO A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
 		cedulaGlobal = ""
 		console.log("DESPUES A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
+	}
+
+	const EliminarInscripcionAspirante = (idCurso) =>{
+		let mensajeRetorno = '';
+		listarFinal = [];
+		listarMatriculas();
+		//listarMatricula.forEach(user => {
+		//		console.log('hay originalmente elemento con idCurso: '+user.id+' y cedula: '+user.cedula)
+		//	})
+		console.log("ENTRO A ELIMINAR CEDULA: " + cedulaGlobal)
+		let crear = {
+			idCurso: idCurso
+		}
+		let existe = listarMatricula.find(nom => nom.id == crear.idCurso && nom.cedula == cedulaGlobal);
+		console.log(cedulaGlobal + "   " + crear.idCurso)
+		if(existe){
+			let filterNew = listarMatricula.filter(nom => ((nom.id !== idCurso) || (nom.cedula !== cedulaGlobal)));
+		//	filterNew.forEach(user => {
+		//		console.log('quedo elemento con idCurso: '+user.id+' y cedula: '+user.cedula)
+		//	})
+			if(filterNew.length == listarMatricula.length){
+			console.log('no se elimino a nadie');
+			mensajeRetorno = 'no se elimino a nadie';
+			}else{
+			listarMatricula = filterNew;
+			guardarMatricula()
+			
+			mensajeRetorno = 'Eliminado exitosamente!!';
+			
+			}
+		}else{
+			mensajeRetorno = 'No hay registros con el id y cedula ingresados para eliminar';
+		}
+	console.log('antes del retorno en mensajeVerInscritosEliminar: '+mensajeRetorno);
+	return 	mensajeRetorno;
+	
 	}
 
 
@@ -561,5 +586,6 @@ module.exports = {
 	VerInscritos,
 	mensajeVerInscritosEliminar,
 	guardarDocumentoGlobal,
-	borrarDocumentoGlobal
+	borrarDocumentoGlobal,
+	EliminarInscripcionAspirante
 }
