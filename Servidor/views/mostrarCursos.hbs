@@ -2,21 +2,18 @@
 {{>header}}
 {{>navCoordinador}}
 
-<p>
-    Bienvenidos a la pagina de mostrar cursos
-</p>
-    
-{{crearCursos id nombre modalidad valor descripcion intensidad estado}}
+<br>    
+<b>{{crearCursos id nombre modalidad valor descripcion intensidad estado}}</b>
+<br>
 {{mensajeEditarCurso}}
    
 {{{crearTablaCursos}}}
-</div>
-{{EditarCurso idCurso estado}}
-<p>
+
+<h1>
     Editar curso
-</p>
+</h1>
+<b>{{EditarCurso idCurso estado}}</b>
 <form action="/mostrarCursos" method="POST">
-    <br>
     <div class="row">
         <div class="col">
             <label>Id Curso</label>
@@ -39,3 +36,4 @@
         </div>
     </div> 
 </form>
+</div>

@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'hbs');
 
 app.get('/', (req, res) => {
+    funciones.borrarDocumentoGlobal();
     res.render('index', {
         mensajeUsuario: ""
     })
@@ -27,6 +28,7 @@ app.post('/ingreso', (req, res) => {
         cedula: parseInt(req.body.documento),
     }
     let response = funciones.buscarDuplicado(loginData);
+    funciones.guardarDocumentoGlobal(loginData.cedula);
     //console.log('el resultado de response es: '+response);
     if (response != null) {
         let rolEncontrado = funciones.retornarRol(loginData);
@@ -87,6 +89,32 @@ app.post('/listaCursos', (req, res) => {
     }
 });
 
+app.get('/verInscritos', (req, res) => {
+    res.render('verInscritos')
+})
+
+app.post('/verInscritos', (req, res) => {
+    let mensajeVerInscritos = '';
+    let mensajeVerInscritosEliminar = '';
+    let loginData = {
+        idCurso: parseInt(req.body.idCurso),
+        cedula: parseInt(req.body.cedulaUsuario)
+
+    }
+    if (!isNaN(loginData.cedula) && (!isNaN(loginData.idCurso))) {
+        console.log("Entre a mensajeVerInscritosEliminar ");
+        mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso, loginData.cedula);
+    } else {
+        if (!isNaN(loginData.idCurso)) {
+            console.log("Entre a mensajeVerInscritos curso");
+            mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
+        }
+    }
+    res.render('verInscritos', {
+        mensajeVerInscritos: mensajeVerInscritos,
+        mensajeVerInscritosEliminar: mensajeVerInscritosEliminar
+    })
+})
 
 app.post('/mostrarCursos', (req, res) => {
     let mensajeEditarCurso = '';
@@ -130,9 +158,7 @@ app.get('/calculos', (req, res) => {
 app.post('/aspirante', (req, res) => {
     console.log('Entro a post');
     res.render('aspirante', {
-        id: parseInt(req.body.id),
-        cedula1: parseInt(req.body.cedula1),
-        cedulaMisCursos: parseInt(req.body.cedulaMisCursos)
+        id: parseInt(req.body.id)
     })
 });
 

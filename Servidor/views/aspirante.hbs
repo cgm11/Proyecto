@@ -11,17 +11,13 @@
 
     <br>
     <h1>Matriculas</h1>
-   <b> {{matricularUsuario id cedula1}} </b>
+   <b> {{matricularUsuario id}} </b>
     <form action="/aspirante#matricula" id= 'matricula' method="POST">
         <div class="row">
             <div class="col">
                 <label>Indique el id del curso al que se quiere matricular</label>
                 <input type="number" class="form-control" placeholder="Id curso" name="id" required>
-            </div>
-            <div class="col">
-                <label>Documento de identidad</label>
-                <input type="number" class="form-control" placeholder="" name="cedula1" required>
-            </div>
+            </div>            
         </div>
             <div class="form-group">
                 <br><button>Inscribir</button>
@@ -41,6 +37,6 @@
             <br><button>Consultar</button>
         </div>    
     </form>
-{{{misCursos cedulaMisCursos}}}
+{{{misCursos}}}
 
     {{>footer}}

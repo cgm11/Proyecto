@@ -27,6 +27,11 @@ hbs.registerHelper('crearTablaCursos',() => {
     return resultado;
 })
 
+hbs.registerHelper('crearTablaCursosDisponibles',() => {
+    let resultado =  funciones.crearTablaCursosDisponibles();
+    return resultado;
+})
+
 hbs.registerHelper('mostrarCursosAspirante',() => {
     let resultado =  funciones.mostrarCursosAspirante();
     return resultado;
@@ -42,16 +47,14 @@ hbs.registerHelper('EditarCurso',() => {
     return resultado;
 })
 
-hbs.registerHelper('matricularUsuario',(id, cedula1)=>{    
-    console.log('Id: '+ id + 'cedula: '+cedula1);
+hbs.registerHelper('matricularUsuario',(id)=>{    
     var resultado = "";
-    resultado = funciones.matricularUsuario(id, cedula1);
+    resultado = funciones.matricularUsuario(id);
     return resultado;
 })
 
-hbs.registerHelper('misCursos',(cedulaMisCursos)=>{    
-    console.log('cedula: '+ cedulaMisCursos);
+hbs.registerHelper('misCursos',()=>{    
     var resultado = "";
-    resultado = funciones.mostrarMisCursos(cedulaMisCursos);
+    resultado = funciones.mostrarMisCursos();
     return resultado;
 })
