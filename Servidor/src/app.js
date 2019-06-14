@@ -97,12 +97,16 @@ app.post('/verInscritos', (req, res) => {
     let mensajeVerInscritosEliminar = '';
     let loginData ={
         idCurso: parseInt(req.body.idCurso),
-        cedula: parseInt(req.body.cedulaUsuario)
-        
+        cedula: parseInt(req.body.cedulaUsuario),
+        idCursoVer: parseInt(req.body.idCursoVer)
     }
+    console.log('idCursoVer: '+loginData.idCursoVer+', cedula: '+loginData.cedula+' y idCurso: '+loginData.idCurso);
     if (!isNaN(loginData.cedula)&&(!isNaN(loginData.idCurso))){
         console.log("Entre a mensajeVerInscritosEliminar ");
         mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso,loginData.cedula);
+                console.log('valor de mensajeVerInscritosEliminar: '+mensajeVerInscritosEliminar);
+                console.log("Entre a mensajeVerInscritos curso");
+        mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
     }else{
         if (!isNaN(loginData.idCurso)){
         console.log("Entre a mensajeVerInscritos curso");
@@ -125,6 +129,7 @@ app.post('/mostrarCursos', (req, res) => {
     if (!isNaN(loginData.idCurso)){
         console.log("Entre a Editar curso");
         mensajeEditarCurso = funciones.editarCurso(loginData.idCurso,loginData.estado);
+
     }
     res.render('mostrarCursos', {
     	id: parseInt(req.body.id),

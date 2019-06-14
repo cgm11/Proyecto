@@ -342,30 +342,27 @@ const mensajeVerInscritosEliminar = (idCurso, cedula) =>{
 	let mensajeRetorno = '';
 	listarFinal = [];
 	listarMatriculas();
+	//listarMatricula.forEach(user => {
+	//		console.log('hay originalmente elemento con idCurso: '+user.id+' y cedula: '+user.cedula)
+	//	})
 	let existe = listarMatricula.find(nom => nom.id == idCurso && nom.cedula == cedula);
 	if(existe){
-		let filterNew = listarMatricula.filter(nom => nom.id != idCurso && nom.cedula != cedula);
+		let filterNew = listarMatricula.filter(nom => ((nom.id !== idCurso) || (nom.cedula !== cedula)));
+	//	filterNew.forEach(user => {
+	//		console.log('quedo elemento con idCurso: '+user.id+' y cedula: '+user.cedula)
+	//	})
 		if(filterNew.length == listarMatricula.length){
 		console.log('no se elimino a nadie');
 		mensajeRetorno = 'no se elimino a nadie';
 		}else{
 		listarMatricula = filterNew;
 		guardarMatricula()
+		mensajeRetorno = 'Eliminado exitosamente!!';
 		}
 	}else{
 		mensajeRetorno = 'No hay registros con el id y cedula ingresados para eliminar';
 	}
-
-
-	//let listadoCursos = listarMatricula.filter(nom => nom.id == idCurso);
-	///if(listadoCursos.length>=1)
-	//{	
-	//	let listadoCursosDistintos = listarMatricula.filter(nom => nom.id != idCurso);
-	//	let listadoEstudiantesDistintos = listadoCursos.filter(nom => nom.cedula != cedula);
-	//}else{
-	//	mensajeRetorno = 'No hay registros con el id de curso ingresado para eliminar';
-	//}
-	
+console.log('antes del retorno en mensajeVerInscritosEliminar: '+mensajeRetorno);
 return 	mensajeRetorno;
 
 }
