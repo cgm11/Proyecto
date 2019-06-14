@@ -286,18 +286,21 @@ const matricularUsuario = (id, cedula) => {
 	let mensajeRetorno = '';
 	listarMatriculas()
 	listar();
+	listarOtro();
 	let respuestaNew = "";
 	let resultado = "";
 	let crear = {
 		id: id,
 		cedula: cedula
 	};
-	if (id == null || id == 'undefined') {
+	if (isNaN(id) | id == null | id == 'undefined' | cedula == null | cedula == 'undefined' | isNaN(cedula)) {
 		console.log('NO ENTRO A MATRICULAR');
 	} else {
+		console.log('Entro a matricular ID: ' + id);
 		let cursoExiste = listaCursos.find(aux => aux.id == crear.id);
+		let documentoExiste = listaUsuarios.find(aux => aux.cedula == crear.cedula);
 		let duplicadoMatricula = listarMatricula.find(nom => nom.cedula == crear.cedula && nom.id == crear.id);
-		if (cursoExiste) { //Valido si el curso existe
+		if (cursoExiste && documentoExiste) { //Valido si el curso existe
 			if (!duplicadoMatricula) {
 				listarMatricula.push(crear);
 				console.log("ENTRO A MATRICULAR USUARIO");
@@ -309,10 +312,10 @@ const matricularUsuario = (id, cedula) => {
 				console.log("El usuario ya está inscrito en el curso");
 			}
 		} else {
-			resultado = "El curso no existe";
-			console.log("El curso no existe");
+			resultado = "El curso o el documento ingresado no existe";
 		}
 	}
+	return resultado;
 
 }
 
@@ -328,31 +331,88 @@ const guardarMatricula = () => {
 	return mensaje;
 }
 
-const editarCurso = (idCurso, estadoNew) =>{
+const editarCurso = (idCurso, estadoNew) => {
 	try {
 		listarOtro();
 		let mensajeRetorno = '';
 		let existe = listaCursos.find(nom => nom.id == idCurso)
-		if(existe){
-			if(estadoNew!=null && estadoNew!=""&&estadoNew!="-")
-			{let estado="estado";
-			console.log('valores de existe, estado '+existe.estado);
-			existe[estado]=estadoNew;}
+		if (existe) {
+			if (estadoNew != null && estadoNew != "" && estadoNew != "-") {
+				let estado = "estado";
+				console.log('valores de existe, estado ' + existe.estado);
+				existe[estado] = estadoNew;
+			}
 			mensajeRetorno = guardarCurso();
-			mensajeRetorno = 'Resultado editar: '+ mensajeRetorno;
-		}else{
-			if(isNaN(idCurso)){
+			mensajeRetorno = 'Resultado editar: ' + mensajeRetorno;
+		} else {
+			if (isNaN(idCurso)) {
 				mensajeRetorno = '';
-			}else{
+			} else {
 				console.log('No hay curso con ese id');
-				mensajeRetorno = 'Resultado editar: '+ 'Cambio no exitoso, no hay curso con ese id';}
+				mensajeRetorno = 'Resultado editar: ' + 'Cambio no exitoso, no hay curso con ese id';
+			}
 		}
 		return mensajeRetorno;
-	}catch{
+	} catch{
 		mensajeRetorno = 'Error, favor consulta con un admin';
 		return mensajeRetorno;
 	}
 }
+
+	const mostrarMisCursos = (cedulaMisCursos) => {
+		let result = '';
+		let aux = '';
+		try {
+			if (cedulaMisCursos == null || cedulaMisCursos == 'undefined' || isNaN(cedulaMisCursos)) {
+			console.log("No existe cedulaMisCursos no entra a función mostrarMisCursos");
+			result = "Documento no valido";
+		}else{			
+			console.log("Entro mostrarMisCursos función");
+			listarMatriculas();
+			listar();
+			listarOtro();
+			console.log("Paso listar");
+			let texto = "<table class='table table-striped table-bordered'> \
+						<thead> \
+						<th> Id </th> \
+						<th> Nombre Curso </th> \
+						<th> Modalidad </th> \
+						<th> Valor </th> \
+						<th> Descripción </th> \
+						<th> Intensidad horaria </th> \
+						</thead> \
+						<tbody>";
+			listarMatricula.forEach(cur => {
+				console.log("Entro a forEach, valor id: " + cur.id + "Valor cedula: " + cur.cedula);
+				if (listaUsuarios.find(nom => cur.cedula == cedulaMisCursos)) {
+					aux = 'existe';
+					console.log("Entro a If cedula: " + cedulaMisCursos);
+					let curso = listaCursos.find(aux => aux.id == cur.id);					
+					texto = texto +
+						'<tr>' +
+						'<td>' + curso.id + '</td>' +
+						'<td>' + curso.nombre + '</td>' +
+						'<td>' + curso.modalidad + '</td>' +
+						'<td>' + curso.valor + '</td>' +
+						'<td>' + curso.descripcion + '</td>' +
+						'<td>' + curso.intensidad + '</td>'
+				}else{
+					console.log("se salto if");
+				}
+			})
+			texto = texto + '</tbody></table>';
+			if(aux == ''){
+				return '<b>No tiene ningún curso asociado</b><br><br>';
+			}else{
+			return texto;
+			}
+		}
+		} catch (error) {
+			console.log(error);
+			return "Error";
+		}
+	}
+
 
 module.exports = {
 	registrarUsuario,
@@ -370,5 +430,6 @@ module.exports = {
 	actualizarUsuario,
 	editarCurso,
 	matricularUsuario,
-	guardarMatricula
+	guardarMatricula,
+	mostrarMisCursos
 }

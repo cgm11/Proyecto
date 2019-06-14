@@ -6,12 +6,13 @@
     <br>
 
     {{{mostrarCursosAspirante}}}
-    {{matricularUsuario id cedula1}}
+    
+
 
     <br>
     <h1>Matriculas</h1>
-    <form action="/aspirante" id= 'matricula' method="POST">
-        <br>
+   <b> {{matricularUsuario id cedula1}} </b>
+    <form action="/aspirante#matricula" id= 'matricula' method="POST">
         <div class="row">
             <div class="col">
                 <label>Indique el id del curso al que se quiere matricular</label>
@@ -27,10 +28,19 @@
             </div>
     </form>
 
-    <script>
-function displayResult() {
-    let cedula1 = {{cedula}}
-}
-</script>
+<br>
+<h1>Mis cursos</h1>
+<form action="/aspirante#misCursos" id= 'misCursos' method="POST">
+        <div class="row">
+            <div class="col">
+                <label>Por favor ingrese su documento</label>
+                <input type="number" class="form-control" placeholder="Documento" name="cedulaMisCursos" required>
+            </div>            
+        </div>
+        <div class="form-group">
+            <br><button>Consultar</button>
+        </div>    
+    </form>
+{{{misCursos cedulaMisCursos}}}
 
     {{>footer}}

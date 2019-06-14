@@ -14,40 +14,38 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set('view engine', 'hbs');
 
-app.get('/',(req, res) => {
-    res.render('index',{
-    	mensajeUsuario:""
+app.get('/', (req, res) => {
+    res.render('index', {
+        mensajeUsuario: ""
     })
 
 });
 
 app.post('/ingreso', (req, res) => {
-    	let loginData ={
-    	correo: req.body.correo,
+    let loginData = {
+        correo: req.body.correo,
         cedula: parseInt(req.body.documento),
+    }
+    let response = funciones.buscarDuplicado(loginData);
+    //console.log('el resultado de response es: '+response);
+    if (response != null) {
+        let rolEncontrado = funciones.retornarRol(loginData);
+        if (rolEncontrado == "aspirante") {
+            res.render('aspirante', {
+                correo: req.body.correo,
+                cedula: parseInt(req.body.documento)
+            })
+        } else {
+            res.render('coordinador', {
+                correo: req.body.correo,
+                cedula: parseInt(req.body.documento)
+            })
         }
-        let response = funciones.buscarDuplicado( loginData );
-        //console.log('el resultado de response es: '+response);
-        if(response != null)
-        {
-        	let rolEncontrado = funciones.retornarRol(loginData);
-        	if(rolEncontrado=="aspirante")
-        		{
-        			res.render('aspirante', {
-       		 		correo: req.body.correo,
-        			cedula: parseInt(req.body.documento)
-    				})
-        		}else{
-        			res.render('coordinador', {
-       		 		correo: req.body.correo,
-        			cedula: parseInt(req.body.documento)
-    				})
-        	}
-        }
-        else{
-        	res.render('registro')
-        }
-    
+    }
+    else {
+        res.render('registro')
+    }
+
 })
 
 app.post('/registro', (req, res) => {
@@ -63,45 +61,46 @@ app.get('/crearCurso', (req, res) => {
 });
 
 app.post('/listaCursos', (req, res) => {
-	let mensajeUsuario='';
-	let loginData ={
-    //
-    	correo: req.body.correo,
-        cedula: parseInt(req.body.documento),
-        nombre: req.body.nombre,
-        telefono: req.body.telefono,}
-        let response = funciones.buscarDuplicado( loginData );
-        //console.log('el resultado de response es: '+response);
-        if(response == null){
-        	res.render('listaCursos', {
-        			nombre: req.body.nombre,
-        			correo: req.body.correo,
-        			cedula: parseInt(req.body.documento),
-        			telefono: req.body.telefono,
-        	});
-    	}else{
-    	res.render('index', {
+    let mensajeUsuario = '';
+    let loginData = {
+        //
         correo: req.body.correo,
         cedula: parseInt(req.body.documento),
-        mensajeUsuario: "USUARIO YA REGISTRADO"
-    	});
-	  }
-	});  
+        nombre: req.body.nombre,
+        telefono: req.body.telefono,
+    }
+    let response = funciones.buscarDuplicado(loginData);
+    //console.log('el resultado de response es: '+response);
+    if (response == null) {
+        res.render('listaCursos', {
+            nombre: req.body.nombre,
+            correo: req.body.correo,
+            cedula: parseInt(req.body.documento),
+            telefono: req.body.telefono,
+        });
+    } else {
+        res.render('index', {
+            correo: req.body.correo,
+            cedula: parseInt(req.body.documento),
+            mensajeUsuario: "USUARIO YA REGISTRADO"
+        });
+    }
+});
 
 
 app.post('/mostrarCursos', (req, res) => {
     let mensajeEditarCurso = '';
-    let loginData ={
+    let loginData = {
         idCurso: parseInt(req.body.idCurso),
         estado: req.body.estado
     }
 
-    if (!isNaN(loginData.idCurso)){
+    if (!isNaN(loginData.idCurso)) {
         console.log("Entre a Editar curso");
-        mensajeEditarCurso = funciones.editarCurso(loginData.idCurso,loginData.estado);
+        mensajeEditarCurso = funciones.editarCurso(loginData.idCurso, loginData.estado);
     }
     res.render('mostrarCursos', {
-    	id: parseInt(req.body.id),
+        id: parseInt(req.body.id),
         nombre: req.body.nombre,
         modalidad: req.body.modalidad,
         valor: parseInt(req.body.valor),
@@ -114,7 +113,7 @@ app.post('/mostrarCursos', (req, res) => {
 
 app.get('/mostrarCursos', (req, res) => {
     res.render('mostrarCursos', {
-    	id: parseInt(req.body.id),
+        id: parseInt(req.body.id),
         nombre: req.body.nombre,
         modalidad: req.body.modalidad,
         valor: parseInt(req.body.valor),
@@ -124,22 +123,23 @@ app.get('/mostrarCursos', (req, res) => {
     })
 })
 
-app.get('/calculos',(req,res)=>{
-	res.render('calculos')
+app.get('/calculos', (req, res) => {
+    res.render('calculos')
 })
 
 app.post('/aspirante', (req, res) => {
     console.log('Entro a post');
-    res.render('aspirante', {        
-    	id: parseInt(req.body.id),
-        cedula1: parseInt(req.body.cedula1)
+    res.render('aspirante', {
+        id: parseInt(req.body.id),
+        cedula1: parseInt(req.body.cedula1),
+        cedulaMisCursos: parseInt(req.body.cedulaMisCursos)
     })
 });
 
 app.get('/aspirante', (req, res) => {
-    console.log('Entro a get');
+    //console.log('Entro a get');
     res.render('aspirante', {
-    	correo: req.body.correo,
+        correo: req.body.correo,
         cedula: parseInt(req.body.documento),
         nombre: req.body.nombre,
         telefono: req.body.telefono
@@ -147,26 +147,27 @@ app.get('/aspirante', (req, res) => {
 });
 
 app.post('/editarUsuario', (req, res) => {
-    let mensajeEditarUsuario='';
-    let loginData ={    
+    let mensajeEditarUsuario = '';
+    let loginData = {
         correo: req.body.correo,
         cedula: parseInt(req.body.cedula),
         nombre: req.body.nombre,
         telefono: req.body.telefono,
         rol: req.body.rol
     }
-    console.log("valor de cedula: "+loginData.cedula)
-    if (!isNaN(loginData.cedula)){
+    console.log("valor de cedula: " + loginData.cedula)
+    if (!isNaN(loginData.cedula)) {
         console.log("Entre a Editar usuario");
-        mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula,loginData.nombre,loginData.correo,loginData.telefono,loginData.rol);
+        mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula, loginData.nombre, loginData.correo, loginData.telefono, loginData.rol);
     }
-    res.render('editarUsuario',{
+    res.render('editarUsuario', {
         mensajeEditarUsuario: mensajeEditarUsuario
     })
 });
 app.get('/editarUsuario', (req, res) => {
     res.render('editarUsuario')
 })
+
 
 app.get('*', (req, res) => {
     res.render('error')

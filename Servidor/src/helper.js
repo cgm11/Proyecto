@@ -37,16 +37,21 @@ hbs.registerHelper('listarUsuarios',() => {
     return resultado;
 })
 
-<<<<<<< HEAD
 hbs.registerHelper('EditarCurso',() => {
     let resultado =  funciones.editarCurso();
     return resultado;
 })
-=======
-hbs.registerHelper('matricularUsuario',(id, cedula)=>{    
-    console.log('Id: '+ id + 'cedula: '+cedula);
+
+hbs.registerHelper('matricularUsuario',(id, cedula1)=>{    
+    console.log('Id: '+ id + 'cedula: '+cedula1);
     var resultado = "";
-    resultado = funciones.matricularUsuario(id, cedula);
+    resultado = funciones.matricularUsuario(id, cedula1);
     return resultado;
 })
->>>>>>> Branch_Carola
+
+hbs.registerHelper('misCursos',(cedulaMisCursos)=>{    
+    console.log('cedula: '+ cedulaMisCursos);
+    var resultado = "";
+    resultado = funciones.mostrarMisCursos(cedulaMisCursos);
+    return resultado;
+})
