@@ -2,6 +2,7 @@ listaUsuarios = [];
 listaCursos = [];
 listarMatricula = [];
 const fs = require('fs');
+let cedulaGlobal = "";
 
 let intentoRegistro = (correo, cedula, nombre, telefono, rol, callback) => {
 	let resultado1 = "";
@@ -113,8 +114,8 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 			console.log('valor de resultado: ' + resultado + " y respuestaNew: " + respuestaNew);
 		}
 	} else {
-		resultado = "No se guarda registro"
-		console.log('No se guarda registro')
+		console.log('No se guarda registro');
+		//resultado = "No se guarda registro"
 	}
 	return resultado;
 }
@@ -387,26 +388,33 @@ const listarMatriculas = () => {
 	}
 }
 
-const matricularUsuario = (id, cedula) => {
+const matricularUsuario = (id) => {
 	let mensajeRetorno = '';
 	listarMatriculas()
 	listar();
+	listarOtro();
 	let respuestaNew = "";
 	let resultado = "";
 	let crear = {
 		id: id,
-		cedula: cedula
+		cedula: ""
 	};
-	if (id == null || id == 'undefined') {
+	
+	if (isNaN(crear.id) | crear.id == null | crear.id == 'undefined' | cedulaGlobal == null | cedulaGlobal == 'undefined' | isNaN(cedulaGlobal) | cedulaGlobal == "") {
 		console.log('NO ENTRO A MATRICULAR');
 	} else {
+		console.log('Entro a matricular cedulaGlobal: ' + cedulaGlobal);
 		let cursoExiste = listaCursos.find(aux => aux.id == crear.id);
-		let duplicadoMatricula = listarMatricula.find(nom => nom.cedula == crear.cedula && nom.id == crear.id);
-		if (cursoExiste) { //Valido si el curso existe
+		
+		let documentoExiste = listaUsuarios.find(aux => aux.cedula == cedulaGlobal);
+		console.log("Resultado cedula existe:" + documentoExiste + " Resultado curso existe: " + cursoExiste);
+		let duplicadoMatricula = listarMatricula.find(nom => nom.cedula == cedulaGlobal && nom.id == crear.id);
+		if (cursoExiste && documentoExiste) { //Valido si el curso existe
 			if (!duplicadoMatricula) {
 				if(cursoExiste.estado=='Cerrado'){
 					resultado= 'Matricula no exitosa: Curso Cerrado.';
 				}else{
+					crear.cedula = cedulaGlobal;
 				listarMatricula.push(crear);
 				console.log("ENTRO A MATRICULAR USUARIO");
 				respuestaNew = guardarMatricula();
@@ -417,8 +425,7 @@ const matricularUsuario = (id, cedula) => {
 				console.log("El usuario ya está inscrito en el curso");
 			}
 		} else {
-			resultado = "El curso no existe";
-			console.log("El curso no existe");
+			resultado = "El curso ingresado no existe";
 		}
 	}
 	return resultado;
@@ -436,31 +443,101 @@ const guardarMatricula = () => {
 	return mensaje;
 }
 
-const editarCurso = (idCurso, estadoNew) =>{
+const editarCurso = (idCurso, estadoNew) => {
 	try {
 		listarOtro();
 		let mensajeRetorno = '';
 		let existe = listaCursos.find(nom => nom.id == idCurso)
-		if(existe){
-			if(estadoNew!=null && estadoNew!=""&&estadoNew!="-")
-			{let estado="estado";
-			console.log('valores de existe, estado '+existe.estado);
-			existe[estado]=estadoNew;}
+		if (existe) {
+			if (estadoNew != null && estadoNew != "" && estadoNew != "-") {
+				let estado = "estado";
+				console.log('valores de existe, estado ' + existe.estado);
+				existe[estado] = estadoNew;
+			}
 			mensajeRetorno = guardarCurso();
-			mensajeRetorno = 'Resultado editar: '+ mensajeRetorno;
-		}else{
-			if(isNaN(idCurso)){
+			mensajeRetorno = 'Resultado editar: ' + mensajeRetorno;
+		} else {
+			if (isNaN(idCurso)) {
 				mensajeRetorno = '';
-			}else{
+			} else {
 				console.log('No hay curso con ese id');
-				mensajeRetorno = 'Resultado editar: '+ 'Cambio no exitoso, no hay curso con ese id';}
+				mensajeRetorno = 'Resultado editar: ' + 'Cambio no exitoso, no hay curso con ese id';
+			}
 		}
 		return mensajeRetorno;
-	}catch{
+	} catch{
 		mensajeRetorno = 'Error, favor consulta con un admin';
 		return mensajeRetorno;
 	}
 }
+
+	const mostrarMisCursos = () => {
+		console.log("CEDULA GLOBAL: " + cedulaGlobal);
+		let result = '';
+		let aux = '';
+		try {
+			if (cedulaGlobal == null || cedulaGlobal == 'undefined' || isNaN(cedulaGlobal)) {
+			console.log("No existe cedulaMisCursos no entra a función mostrarMisCursos");
+			result = "Documento no valido";
+		}else{			
+			console.log("Entro mostrarMisCursos función");
+			listarMatriculas();
+			listar();
+			listarOtro();
+			console.log("Paso listar");
+			let texto = "<table class='table table-striped table-bordered'> \
+						<thead> \
+						<th> Id </th> \
+						<th> Nombre Curso </th> \
+						<th> Modalidad </th> \
+						<th> Valor </th> \
+						<th> Descripción </th> \
+						<th> Intensidad horaria </th> \
+						</thead> \
+						<tbody>";
+			listarMatricula.forEach(cur => {
+				console.log("Entro a forEach, valor id: " + cur.id + "Valor cedula: " + cur.cedula);
+				if (listaUsuarios.find(nom => cur.cedula == cedulaGlobal)) {
+					//console.log("PRUEBA: " + listaUsuarios.find(nom => cur.cedula == cedulaGlobal));
+					aux = 'existe';
+					console.log("Entro a If cedula: " + cedulaGlobal);
+					let curso = listaCursos.find(aux => aux.id == cur.id);					
+					texto = texto +
+						'<tr>' +
+						'<td>' + curso.id + '</td>' +
+						'<td>' + curso.nombre + '</td>' +
+						'<td>' + curso.modalidad + '</td>' +
+						'<td>' + curso.valor + '</td>' +
+						'<td>' + curso.descripcion + '</td>' +
+						'<td>' + curso.intensidad + '</td>'
+				}else{
+					console.log("se salto if");
+				}
+			})
+			texto = texto + '</tbody></table>';
+			if(aux == ''){
+				return '<b>No tiene ningún curso asociado</b><br><br>';
+			}else{
+			return texto;
+			}
+		}
+		} catch (error) {
+			console.log(error);
+			return "Error";
+		}
+	}
+	
+	const guardarDocumentoGlobal = (doc) =>{
+		console.log("ANTES DE ASIGNAR DOCUMENTO: " + cedulaGlobal);
+		cedulaGlobal = doc;
+		console.log("DESPUES DE ASIGNAR DOCUMENTO: " + cedulaGlobal);
+	}
+	const borrarDocumentoGlobal = () =>{
+		console.log("ENTRO A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
+		cedulaGlobal = ""
+		console.log("DESPUES A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
+	}
+
 
 module.exports = {
 	registrarUsuario,
@@ -480,6 +557,9 @@ module.exports = {
 	editarCurso,
 	matricularUsuario,
 	guardarMatricula,
+	mostrarMisCursos,
 	VerInscritos,
-	mensajeVerInscritosEliminar
+	mensajeVerInscritosEliminar,
+	guardarDocumentoGlobal,
+	borrarDocumentoGlobal
 }
