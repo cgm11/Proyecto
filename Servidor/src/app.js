@@ -158,11 +158,12 @@ app.get('/calculos', (req, res) => {
 app.post('/aspirante', (req, res) => {
     console.log('Entro a post');
     res.render('aspirante', {
-        id: parseInt(req.body.id)
+        id: parseInt(req.body.id),
+        idEliminar: parseInt(req.body.idEliminar)
     })
 });
 
-app.get('/aspirante', (req, res) => {
+/*app.get('/aspirante', (req, res) => {
     //console.log('Entro a get');
     res.render('aspirante', {
         correo: req.body.correo,
@@ -170,7 +171,7 @@ app.get('/aspirante', (req, res) => {
         nombre: req.body.nombre,
         telefono: req.body.telefono
     })
-});
+});*/
 
 app.post('/editarUsuario', (req, res) => {
     let mensajeEditarUsuario = '';

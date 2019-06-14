@@ -386,22 +386,27 @@ const matricularUsuario = (id) => {
 	listarOtro();
 	let respuestaNew = "";
 	let resultado = "";
-	let valorId = id;
+	let crear = {
+		id: id,
+		cedula: ""
+	};
 	
-	if (isNaN(valorId) | valorId == null | valorId == 'undefined' | cedulaGlobal == null | cedulaGlobal == 'undefined' | isNaN(cedulaGlobal)) {
+	if (isNaN(crear.id) | crear.id == null | crear.id == 'undefined' | cedulaGlobal == null | cedulaGlobal == 'undefined' | isNaN(cedulaGlobal) | cedulaGlobal == "") {
 		console.log('NO ENTRO A MATRICULAR');
 	} else {
-		console.log('Entro a matricular ID: ' + valorId);
-		let cursoExiste = listaCursos.find(aux => aux.id == valorId);
+		console.log('Entro a matricular cedulaGlobal: ' + cedulaGlobal);
+		let cursoExiste = listaCursos.find(aux => aux.id == crear.id);
+		
 		let documentoExiste = listaUsuarios.find(aux => aux.cedula == cedulaGlobal);
 		console.log("Resultado cedula existe:" + documentoExiste + " Resultado curso existe: " + cursoExiste);
-		let duplicadoMatricula = listarMatricula.find(nom => nom.cedula == cedulaGlobal && nom.id == valorId);
+		let duplicadoMatricula = listarMatricula.find(nom => nom.cedula == cedulaGlobal && nom.id == crear.id);
 		if (cursoExiste && documentoExiste) { //Valido si el curso existe
 			if (!duplicadoMatricula) {
 				if(cursoExiste.estado=='Cerrado'){
 					resultado= 'Matricula no exitosa: Curso Cerrado.';
 				}else{
-				listarMatricula.push(crear,cedulaGlobal);
+					crear.cedula = cedulaGlobal;
+				listarMatricula.push(crear);
 				console.log("ENTRO A MATRICULAR USUARIO");
 				respuestaNew = guardarMatricula();
 				resultado = "Matricula exitosa ";
@@ -411,7 +416,7 @@ const matricularUsuario = (id) => {
 				console.log("El usuario ya está inscrito en el curso");
 			}
 		} else {
-			resultado = "El curso o el documento ingresado no existe";
+			resultado = "El curso ingresado no existe";
 		}
 	}
 	return resultado;
@@ -484,6 +489,7 @@ const editarCurso = (idCurso, estadoNew) => {
 			listarMatricula.forEach(cur => {
 				console.log("Entro a forEach, valor id: " + cur.id + "Valor cedula: " + cur.cedula);
 				if (listaUsuarios.find(nom => cur.cedula == cedulaGlobal)) {
+					//console.log("PRUEBA: " + listaUsuarios.find(nom => cur.cedula == cedulaGlobal));
 					aux = 'existe';
 					console.log("Entro a If cedula: " + cedulaGlobal);
 					let curso = listaCursos.find(aux => aux.id == cur.id);					
@@ -517,7 +523,11 @@ const editarCurso = (idCurso, estadoNew) => {
 		cedulaGlobal = doc;
 		console.log("DESPUES DE ASIGNAR DOCUMENTO: " + cedulaGlobal);
 	}
-	const borrarDocumentoGlobal = () =>{cedulaGlobal = ""}
+	const borrarDocumentoGlobal = () =>{
+		console.log("ENTRO A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
+		cedulaGlobal = ""
+		console.log("DESPUES A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
+	}
 
 
 module.exports = {
