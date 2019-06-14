@@ -1,0 +1,30 @@
+<div class="container">
+{{>header}}
+{{>navCoordinador}}
+
+{{{crearTablaCursosDisponibles}}}
+
+{{mensajeError}}
+<p>
+    Para ver los inscritos ingrese el id del curso
+</p>
+<form action="/mostrarDespuesBorrar" method="POST">
+    <br>
+    <div class="row">
+        <div class="col">
+            <label>Id Curso</label>
+            <input type="number" class="form-control" placeholder="Id curso" name="idCurso" required> 
+        </div>
+        
+    </div>
+    <div class="row">
+    	<div class="col">
+    		<label>     </label>
+        	<div class="form-group">
+        	<br><button>Ver inscritos</button>
+        </div>
+    </div> 
+</form>
+
+
+{{{mensajeVerInscritos}}}

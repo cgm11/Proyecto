@@ -87,7 +87,28 @@ app.post('/listaCursos', (req, res) => {
     	});
 	  }
 	});  
-
+app.post('/mostrarDespuesBorrar', (req, res) => {
+    let mensajeVerInscritos = '';
+    let mensajeVerInscritosEliminar = '';
+    let loginData ={
+        idCurso: parseInt(req.body.idCurso),
+        cedula: parseInt(req.body.cedulaUsuario),
+        idCursoVer: parseInt(req.body.idCursoVer)
+    }
+    console.log('idCursoVer: '+loginData.idCursoVer+', cedula: '+loginData.cedula+' y idCurso: '+loginData.idCurso);
+    
+        if (!isNaN(loginData.cedula)&&(!isNaN(loginData.idCurso))){
+        console.log("Entre a mostrarDespuesBorrar ");
+        mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso,loginData.cedula);
+                console.log('valor de mensajeVerInscritosEliminar: '+mensajeVerInscritosEliminar);
+                console.log("Entre a mensajeVerInscritos curso");
+        mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
+        }
+    res.render('mostrarDespuesBorrar', {
+        mensajeVerInscritos: mensajeVerInscritos,
+        mensajeVerInscritosEliminar: mensajeVerInscritosEliminar
+    })
+});
 app.get('/verInscritos', (req, res) => {
     res.render('verInscritos')
 })

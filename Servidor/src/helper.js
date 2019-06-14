@@ -55,3 +55,9 @@ hbs.registerHelper('matricularUsuario',(id, cedula)=>{
     return resultado;
 })
 
+//hbs.registerHelper('mensajeVerInscritosEliminar',(idCurso, cedulaUsuario) => {
+  //  let resultado =  funciones.mensajeVerInscritosEliminar();
+    //return resultado;
+//})
+
+
