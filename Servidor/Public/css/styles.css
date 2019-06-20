@@ -3,4 +3,100 @@
    text-decoration: none !important; 
    font-weight: bold;
 }
+div.linea{
+  width: 100%;
+  height: 2px;
+  background: black;
+  position: absolute;
+  top: 68px;
+  left: 0;
+}
 
+.login{
+  position: absolute;
+  float: left;
+  top:30%;
+}
+
+.container_login{
+  width: 520px;
+  position: absolute;
+  top: 75px;
+  left: 50px;
+}
+
+.btnregistro{
+  position: absolute;
+  top: 285px;
+  left: 100px;
+}
+
+.Middle{
+  position: absolute;
+  left: 2px;
+}
+.Menu{
+  width: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  list-style: none;
+}
+.item{
+  border-top: 1px solid rgb(29, 160, 58);
+  overflow: hidden;
+}
+.btnmenu{
+  display: block;
+  padding: 16px 20px;
+  background: #066732;
+  color: white;
+  text-decoration: none;
+}
+.btnmenu:before{
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #066732;
+  left: 20px;
+  bottom: -7px;
+  transform: rotate(45deg);
+  text-decoration: none;
+}
+.SubMenu{
+  background: #333;
+  overflow: hidden;
+  transition: max-height 0.3s;
+  max-height: 0;
+}
+a:hover{
+  color: black;
+  text-decoration: none;
+}
+
+.SubMenu a{
+  display: block;
+  padding: 16px 26px;
+  color: white;
+  font-size: 14px;
+  margin: 4px 0;
+  position: relative;
+}
+
+.SubMenu a:before{
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  background: #8ebf28;
+  left: 0;
+  top: 0;
+  transition: 0.3s;
+  opacity: 0;
+}
+.SubMenu a:hover:before{
+  opacity: 1;
+}
+.item:target .SubMenu{
+  max-height: 10em;
+} 
