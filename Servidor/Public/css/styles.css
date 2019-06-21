@@ -100,3 +100,17 @@ a:hover{
 .item:target .SubMenu{
   max-height: 10em;
 } 
+
+.tbl{
+  width: 92%;
+  position: relative;
+  left: 190px;
+  top: -20px;
+}
+
+.edusuario{
+  width: 75%;
+  top: -20px;
+  position: relative;
+  left: 190px;
+}

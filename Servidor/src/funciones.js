@@ -148,8 +148,8 @@ const crearTablaCursos = () => {
 		console.log("Entro");
 		listarOtro();
 		console.log("Paso listar");
-		let texto = "<table class='table table-striped table-bordered'> \
-					<thead> \
+		let texto = "<table class='table table-striped table-bordered tbl'> \
+					<thead  class='thead-dark'> \
 					<th> Id </th> \
 					<th> Nombre </th> \
 					<th> Modalidad </th> \
@@ -185,8 +185,8 @@ const crearTablaCursosDisponibles = () => {
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
 		//console.log('valor de id: '+existe.id)})
-		let texto = "<table class='table table-striped table-bordered'> \
-					<thead> \
+		let texto = "<table class='table table-striped table-bordered tbl'> \
+					<thead class='thead-dark'> \
 					<th> Id </th> \
 					<th> Nombre </th> \
 					<th> Modalidad </th> \
@@ -285,8 +285,8 @@ const mostrarUsuarios = () => {
 		console.log("Entro a mostrarUsuarios");
 		listar();
 		console.log("Paso listar");
-		let texto = "<table class='table table-striped table-bordered'> \
-					<thead> \
+		let texto = "<table class='table table-striped table-bordered tbl'> \
+					<thead class='thead-dark'> \
 					<th> Cedula </th> \
 					<th> Nombre </th> \
 					<th> Correo </th> \
