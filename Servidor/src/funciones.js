@@ -1,8 +1,10 @@
 listaUsuarios = [];
+listaUsuariosMongo = [];
 listaCursos = [];
 listarMatricula = [];
 const fs = require('fs');
 let cedulaGlobal = "";
+const Usuario = require('./models/usuario');
 
 let intentoRegistro = (correo, cedula, nombre, telefono, rol, callback) => {
 	let resultado1 = "";
@@ -11,6 +13,16 @@ let intentoRegistro = (correo, cedula, nombre, telefono, rol, callback) => {
 		resultado1 = resultado2;
 	})
 	console.log("el resultado1 antes de return es: " + resultado1);
+	callback(resultado1);
+}
+
+let intentoRegistroMongo = (correo, cedula, nombre, telefono, rol, callback) => {
+	let resultado1 = "";
+	registrarUsuarioMongo(correo, cedula, nombre, telefono, rol, function (resultado2) {
+		console.log("el resultado otro mongo es: " + resultado2);
+		resultado1 = resultado2;
+	})
+	console.log("el resultado1 antes de return mongo es: " + resultado1);
 	callback(resultado1);
 }
 
@@ -37,6 +49,31 @@ const registrarUsuario = (correo, cedula, nombre, telefono, rol, callback) => {
 	console.log('valor de resultado2: ' + resultado2);
 	callback(resultado2);
 }
+
+const registrarUsuarioMongo = (correo, cedula, nombre, telefono, rol, callback) => {
+	//listar();
+
+	//let resultado = "";
+	let resultado2 = "Ingreso Exitoso";
+	let usuario = new Usuario ({
+		nombre: nombre,
+		cedula: cedula,
+		correo: correo,
+		telefono: telefono,
+		rol: "aspirante"
+	})
+
+	usuario.save( (err, resultado) => {
+		if(err){
+			resultado2 = "ERROR EN GUARDADO DE MONGO";
+		}
+		resultado2 = ("Ingreso exitoso: "+resultado);
+		console.log('el valor de resultado en mongo es: '+ resultado +', error: '+ err)
+	})
+	console.log('el valor de resultado2 en mongo es: '+ resultado2)
+	callback(resultado2);
+}
+
 
 const buscarDuplicado = (data) => {
 	listar();
@@ -283,6 +320,12 @@ const mostrarUsuarios = () => {
 		console.log("Entro a mostrarUsuarios");
 		listar();
 		console.log("Paso listar");
+		Usuario.find({}).exec((err,respuesta)=> {
+			if(err){
+				return console.log(err)
+			}
+			listaUsuariosMongo=respuesta
+		})
 		let texto = "<table class='table table-striped table-bordered'> \
 					<thead> \
 					<th> Cedula </th> \
@@ -527,6 +570,7 @@ const editarCurso = (idCurso, estadoNew) => {
 module.exports = {
 	registrarUsuario,
 	intentoRegistro,
+	intentoRegistroMongo,
 	guardar,
 	crearCursos,
 	guardarCurso,
