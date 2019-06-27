@@ -2,7 +2,14 @@
 {{>header}}
 {{>navCoordinador}}
 
-<br>    
+<br>
+<h4>
+    <center style="position: relative; right: 240px;">
+        Visualizacion de cursos
+    </center>
+   
+</h4>    
+
 <b>{{crearCursos id nombre modalidad valor descripcion intensidad estado}}</b>
 <br>
 <b>{{mensajeEditarCurso}}</b>
@@ -12,9 +19,9 @@
 
 <b>{{EditarCurso idCurso estado}}</b>
 <form class="edusuario" action="/mostrarCursos" method="POST">
-<h1>
+<h4>
     Editar estado del curso
-</h1>
+</h4>
     <div class="row">
         <div class="col">
             <label>Id Curso</label>

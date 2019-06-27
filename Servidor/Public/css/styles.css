@@ -114,3 +114,16 @@ a:hover{
   position: relative;
   left: 190px;
 }
+
+.Cursosdisponibles{
+  width: 92%;
+  position: relative;
+  right: -190px;
+  top: -20px;
+}
+
+.Matricularaspirante{
+  width: 91%;
+  position: relative;
+  right: -195px;
+}
