@@ -128,21 +128,34 @@ app.post('/listaCursos', (req, res) => {
     console.log('usuario: '+usuario.nombre+', cedula: '+usuario.cedula)
     console.log('correo: '+usuario.correo+', telefono: '+usuario.telefono)
     console.log('nombreUser: '+usuario.nombreUser+', password: '+usuario.password)
-    usuario.save((err, resultado) => {
-        if(err){
+    Usuario.findOne({cedula : parseInt(req.body.documento)}, (err, resultados) => {
+        if (err){
+            return console.log(err)
+        }
+        if(!resultados){
+            
+        usuario.save((err, resultado) => {
+            if(err){
             //resultado2 = "ERROR EN GUARDADO DE MONGO";
-            res.render('index', {
+            return res.render('index', {
             nombre: loginData.nombre,
             mensajeUsuario: 'error: ' + err
-        });
-        }
-        res.render('listaCursos', {
+            })
+            }
+            return res.render('listaCursos', {
             nombre: loginData.nombre,
             resultadoNuevo: 'Ingreso Exitoso'
-        });
+            })
+            })
+        }else{
+            return res.render ('index', {
+            mensajeUsuario : "Usuario ya registrado"           
+            })
+        }
+})
         //resultado2 = ("Ingreso exitoso: "+resultado);
         //console.log('el valor de resultado en mongo es: '+ resultado +', error: '+ err)
-    });
+    
     //let response = funciones.buscarDuplicado(loginData);
     //console.log('el resultado de response es: '+response);
     /*if (response == null) {
