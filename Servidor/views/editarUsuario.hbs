@@ -2,14 +2,17 @@
 {{>header}}
 {{>navCoordinador}}
 <br>
-<h4>
-    Bienvenidos a la pagina para editar los usuarios
+<h4 >
+    <center>
+        Bienvenidos a la pagina para editar los usuarios
+    </center>
+    
 </h4>
 <br>
 <b>{{mensajeEditarUsuario}}</b>
 {{{listarUsuariosNew listado}}}
 
-<form action="/editarUsuario" method="POST">
+<form class="edusuario" action="/editarUsuario" method="POST">
     <br>
     <div class="row">
         <div class="col">
@@ -44,7 +47,7 @@
         </div>
     </div>
     <div class="form-group">
-        <br><button>Editar</button>
+        <br><button type="button" class="btn btn-success">Editar</button>
     </div> 
 </form>
 

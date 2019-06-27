@@ -1,10 +1,12 @@
 <div class="container">
 {{>header}} 
 {{>navCoordinador}}
+<br>
 
-{{mostrar}}
-
-<form action="/mostrarCursos" method="POST">
+<form class="edusuario" action="/mostrarCursos" method="POST">
+<h4>
+    Crear curso
+</h4>
     <br>
     <div class="row">
         <div class="col">
@@ -43,7 +45,7 @@
         </div>
     </div>
     <div class="form-group">
-        <br><button>Crear curso</button>
+        <br><button type="button" class="btn btn-success">Crear curso</button>
     </div> 
 </form>
 </div>

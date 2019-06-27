@@ -221,8 +221,8 @@ const crearTablaCursosDisponibles = () => {
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
 		//console.log('valor de id: '+existe.id)})
-		let texto = "<table class='table table-striped table-bordered'> \
-					<thead> \
+		let texto = "<table class='table table-striped table-bordered tbl'> \
+					<thead class='thead-dark'> \
 					<th> Id </th> \
 					<th> Nombre </th> \
 					<th> Modalidad </th> \
@@ -290,22 +290,22 @@ const mostrarCursosAspirante = () => {
 		listaCursos.forEach(cur => {
 			if (cur.estado == 'Disponible') {
 				texto = texto +
-					'<div class="accordion" id="accordionExample"> \
-				<div class="card"> \
-						<div class="card-header" id="heading' + cur.id + '">  \
-							<h2 class="mb-0"> \
-							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '">' +
-					'Nombre: ' + cur.nombre + '<br>Valor: ' + cur.valor + '<br>Descripción: ' + cur.descripcion +
-					'</button> \
-							</h2> \
+					'<div class="Cursosdisponibles"><div class="accordion" id="accordionExample"> \
+						<div class="card"> \
+							<div class="card-header" id="heading' + cur.id + '">  \
+								<h2 class="mb-0"> \
+									<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '">' +
+										'Nombre: ' + cur.nombre + 
+									'</button> \
+								</h2> \
+							</div> \
+							<div id="collapse' + cur.id + '" class="collapse" aria-labelledby="heading' + cur.id + '" data-parent="#accordionExample"> \
+								<div class="card-body">' +
+									'Id curso: ' + cur.id + '<br>Descripción :' + cur.descripcion + '<br>Modalidad: ' + cur.modalidad + '<br>Valor: ' + cur.valor +
+								'</div> \
+							</div> \
 						</div> \
-						<div id="collapse' + cur.id + '" class="collapse" aria-labelledby="heading' + cur.id + '" data-parent="#accordionExample"> \
-							<div class="card-body">' +
-					'Id curso: ' + cur.id + '<br>Descripción :' + cur.descripcion + '<br>Modalidad: ' + cur.modalidad + '<br>Valor: ' + cur.valor +
-					'</div> \
-						</div> \
-				</div> \
-			</div>'
+					</div></div>'
 			}
 		})
 		texto = texto;

@@ -3,14 +3,17 @@
 {{>navCoordinador}}
 <br>
 <h4>
-    Bienvenidos a la pagina de mostrar cursos disponibles e inscritos
+    <center>
+         Bienvenidos a la pagina de mostrar cursos disponibles e inscritos
+    </center>
 </h4>
 <br>
 {{{crearTablaCursosDisponibles}}}
 
 {{mensajeError}}
 <br>
-<p>
+<div class="edusuario">
+    <p>
     <b>Para ver los inscritos ingrese el id del curso</b>
 </p>
 <form action="/verInscritos" method="POST">
@@ -25,7 +28,7 @@
     	<div class="col">
     		<label>     </label>
         	<div class="form-group">
-        	<br><button>Ver inscritos</button>
+        	<br><button type="button" class="btn btn-primary">Ver inscritos</button>
         </div>
     </div> 
 </form>
@@ -50,11 +53,14 @@
         <div class="col">
             <label>     </label>
             <div class="form-group">
-            <br><button>Eliminar Aspirante</button>
+            <br><button type="button" class="btn btn-danger">Eliminar Aspirante</button>
         </div>
     </div> 
 </form>
-</div>
+
 
 <b>{{mensajeVerInscritosEliminar}}</b>
+    
+
+</div>
 

@@ -2,7 +2,9 @@
     {{>header}}
     {{>navAspirante}}
     <br>
-    <h1>Cursos disponibles</h1>
+    <center>
+        <h1>Cursos disponibles</h1>
+    </center>
     <br>
 
     {{{mostrarCursosAspirante}}}
@@ -10,30 +12,34 @@
 
 
     <br>
-    <h1 id='matricula'>Matriculas</h1>
     <b> {{matricularUsuario id}} </b>
-    <form action="/aspirante#matricula" method="POST">
-        <div class="row">
-            <div class="col">
-                <label>Indique el id del curso al que se quiere matricular</label>
-                <input type="number" class="form-control" placeholder="Id curso" name="id" required>
+    <div class="Matricularaspirante">
+        <h1 id='matricula'>Matriculas</h1>
+        <form action="/aspirante#matricula" method="POST">
+            <div class="row">
+                <div class="col">
+                    <label>Indique el id del curso al que se quiere matricular</label>
+                    <input type="number" class="form-control" placeholder="Id curso" name="id" required>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <br><button>Inscribir</button>
-        </div>
-    </form>
-
+            <div class="form-group">
+                <br><button class="btn btn-success">Inscribir</button>
+            </div>
+        </form>
+    </div>
     <br>
+    <div class="Matricularaspirante">
     <h1>Mis cursos</h1>
     <form action="/aspirante#misCursos" id='misCursos' method="POST">
         <div class="form-group">
-            <br><button>Consultar</button>
+            <br><button class="btn btn-primary">Consultar</button>
         </div>
     </form>
     {{{misCursos}}}
-
+    </div>
     <br>
+
+    <div class="Matricularaspirante">
     <h1 id='Eliminar'>Eliminar un curso</h1>
     <b> {{mensajeVerInscritosEliminar}} </b>
     <form action="/aspirante#matricula" method="POST">
@@ -44,9 +50,9 @@
             </div>
         </div>
         <div class="form-group">
-            <br><button>Eliminar</button>
+            <br><button  class="btn btn-danger">Eliminar</button>
         </div>
     </form>
-    
     {{>footer}}
+    </div>
 </div>
