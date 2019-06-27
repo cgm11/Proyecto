@@ -217,7 +217,6 @@ app.post('/mostrarCursos', (req, res) => {
                 })
             })
         })
-        //mensajeEditarCurso = funciones.editarCurso(loginData.idCurso, loginData.estado);
     } else {
         let curso = new Curso({
             idcurso: parseInt(req.body.idcurso),
@@ -229,25 +228,37 @@ app.post('/mostrarCursos', (req, res) => {
             estado: "Disponible"
 
         })
-
-        curso.save((err, resultado) => {
-            if (err) {
-                res.render('mostrarCursos', {                    
-                    mostrar: "Se presentaron problemas creando el curso, \
-                 por favor vuelva a intentarlo: " + err
+        Curso.findOne({idcurso : parseInt(req.body.idcurso)}, (err, resultados) => {
+           if(err){
+                res.render('crearCurso', {                    
+                    mostrar: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
                 })
             }
-            Curso.find({}).exec((err, resultado) => {
-                if (err) {
-                    return console.log(err)
-                }
-                res.render('mostrarCursos', {
-                    mostrar: "Curso creado con exito",
-                    listado: resultado
-                })
+            if(resultados){
+            return res.render('crearCurso', {                    
+                mostrar: "El id del curso ya existe, por favor validar"
             })
-
-        })
+            }else{
+                curso.save((err1, resultado) => {
+                    if (err1) {
+                        res.render('crearCurso', {                    
+                            mostrar: "Se presentaron problemas creando el curso, \
+                         por favor vuelva a intentarlo" + err1
+                        })
+                    }
+                    Curso.find({}).exec((err, resultado) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        res.render('mostrarCursos', {
+                            mostrar: "Curso creado con exito",
+                            listado: resultado
+                        })
+                    })
+        
+                })
+            }
+        })   
     }
 })
 
