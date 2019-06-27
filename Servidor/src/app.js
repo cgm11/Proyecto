@@ -9,6 +9,7 @@ require('./helper')
 const funciones = require('./funciones');
 const mongoose = require('mongoose');
 const Usuario = require('./models/usuario');
+const Curso = require('./models/cursos');
 const bcrypt = require('bcrypt');
 const session = require('express-session')
 var MemoryStore = require('memorystore')(session)
@@ -34,7 +35,9 @@ app.use(session({
 }))
 
 //BodyParser
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 
 //hbs
 app.set('view engine', 'hbs');
@@ -116,7 +119,7 @@ app.post('/listaCursos', (req, res) => {
         nombre: req.body.nombre,
         telefono: req.body.telefono,
     }
-    let usuario = new Usuario ({
+    let usuario = new Usuario({
         nombre: req.body.nombre,
         cedula: parseInt(req.body.documento),
         correo: req.body.correo,
@@ -186,17 +189,17 @@ app.post('/verInscritos', (req, res) => {
         cedula: parseInt(req.body.cedulaUsuario),
         idCursoVer: parseInt(req.body.idCursoVer)
     }
-    console.log('idCursoVer: '+loginData.idCursoVer+', cedula: '+loginData.cedula+' y idCurso: '+loginData.idCurso);
-    if (!isNaN(loginData.cedula)&&(!isNaN(loginData.idCurso))){
+    console.log('idCursoVer: ' + loginData.idCursoVer + ', cedula: ' + loginData.cedula + ' y idCurso: ' + loginData.idCurso);
+    if (!isNaN(loginData.cedula) && (!isNaN(loginData.idCurso))) {
         console.log("Entre a mensajeVerInscritosEliminar ");
-        mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso,loginData.cedula);
-                console.log('valor de mensajeVerInscritosEliminar: '+mensajeVerInscritosEliminar);
-                console.log("Entre a mensajeVerInscritos curso");
-        mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
-    }else{
-        if (!isNaN(loginData.idCurso)){
+        mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso, loginData.cedula);
+        console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
         console.log("Entre a mensajeVerInscritos curso");
         mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
+    } else {
+        if (!isNaN(loginData.idCurso)) {
+            console.log("Entre a mensajeVerInscritos curso");
+            mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
         }
     }
     res.render('verInscritos', {
@@ -206,7 +209,6 @@ app.post('/verInscritos', (req, res) => {
 })
 
 app.post('/mostrarCursos', (req, res) => {
-    let mensajeEditarCurso = '';
     let loginData = {
         idCurso: parseInt(req.body.idCurso),
         estado: req.body.estado
@@ -214,29 +216,73 @@ app.post('/mostrarCursos', (req, res) => {
 
     if (!isNaN(loginData.idCurso)) {
         console.log("Entre a Editar curso");
-        mensajeEditarCurso = funciones.editarCurso(loginData.idCurso, loginData.estado);
+        Curso.findOneAndUpdate({idcurso: loginData.idCurso},{estado : req.body.estado}, {new: true}, (err, resultado) => {
+            if (err) {
+                return console.log(err)
+            }
+            Curso.find({}).exec((err, resultado) => {
+                if (err) {
+                    return console.log(err)
+                }
+                res.render('mostrarCursos', {
+                    mostrar: "Curso actualizado con exito",
+                    listado: resultado
+                })
+            })
+        })
+    } else {
+        let curso = new Curso({
+            idcurso: parseInt(req.body.idcurso),
+            nombre: req.body.nombre,
+            modalidad: req.body.modalidad,
+            valor: parseInt(req.body.valor),
+            descripcion: req.body.descripcion,
+            intensidad: req.body.intensidad,
+            estado: "Disponible"
+
+        })
+        Curso.findOne({idcurso : parseInt(req.body.idcurso)}, (err, resultados) => {
+           if(err){
+                res.render('crearCurso', {                    
+                    mostrar: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
+                })
+            }
+            if(resultados){
+            return res.render('crearCurso', {                    
+                mostrar: "El id del curso ya existe, por favor validar"
+            })
+            }else{
+                curso.save((err1, resultado) => {
+                    if (err1) {
+                        res.render('crearCurso', {                    
+                            mostrar: "Se presentaron problemas creando el curso, \
+                         por favor vuelva a intentarlo" + err1
+                        })
+                    }
+                    Curso.find({}).exec((err, resultado) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        res.render('mostrarCursos', {
+                            mostrar: "Curso creado con exito",
+                            listado: resultado
+                        })
+                    })
+        
+                })
+            }
+        })   
     }
-    res.render('mostrarCursos', {
-        id: parseInt(req.body.id),
-        nombre: req.body.nombre,
-        modalidad: req.body.modalidad,
-        valor: parseInt(req.body.valor),
-        descripcion: req.body.descripcion,
-        intensidad: parseInt(req.body.intensidad),
-        estado: "Disponible",
-        mensajeEditarCurso: mensajeEditarCurso
-    })
 })
 
 app.get('/mostrarCursos', (req, res) => {
-    res.render('mostrarCursos', {
-        id: parseInt(req.body.id),
-        nombre: req.body.nombre,
-        modalidad: req.body.modalidad,
-        valor: parseInt(req.body.valor),
-        descripcion: req.body.descripcion,
-        intensidad: parseInt(req.body.intensidad),
-        estado: "Disponible"
+    Curso.find({}).exec((err, resultado) => {
+        if (err) {
+            return console.log(err)
+        }
+        res.render('mostrarCursos', {
+            listado: resultado
+        })
     })
 })
 
@@ -252,12 +298,12 @@ app.post('/aspirante', (req, res) => {
         id: parseInt(req.body.id),
         idEliminar: parseInt(req.body.idEliminar)
     }
-    console.log('idCursoVer: '+loginData.idCursoVer+', cedula: '+loginData.cedula+' y idCurso: '+loginData.idCurso);
-    if (!isNaN(loginData.idEliminar)){
+    console.log('idCursoVer: ' + loginData.idCursoVer + ', cedula: ' + loginData.cedula + ' y idCurso: ' + loginData.idCurso);
+    if (!isNaN(loginData.idEliminar)) {
         console.log("Entre a mensajeVerInscritosEliminar ");
         mensajeVerInscritosEliminar = funciones.EliminarInscripcionAspirante(loginData.idEliminar);
-                console.log('valor de mensajeVerInscritosEliminar: '+mensajeVerInscritosEliminar);
-                console.log("Entre a mensajeVerInscritos curso");
+        console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
+        console.log("Entre a mensajeVerInscritos curso");
     }
     res.render('aspirante', {
         id: parseInt(req.body.id),
@@ -328,33 +374,33 @@ app.post('/editarUsuario', (req, res) => {
         //mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula, loginData.nombre, loginData.correo, loginData.telefono, loginData.rol);
     }
     ///
-    Usuario.find({},(err,respuesta)=>{
-        if (err){
+    Usuario.find({}, (err, respuesta) => {
+        if (err) {
             //res.render('editarUsuario', {
-        //mensajeEditarUsuario: mensajeEditarUsuario,
-        listado : ""
-    //})
+            //mensajeEditarUsuario: mensajeEditarUsuario,
+            listado: ""
+            //})
             return console.log(err)
         }
-        res.render ('editarUsuario',{
-            listado : respuesta,
+        res.render('editarUsuario', {
+            listado: respuesta,
             mensajeEditarUsuario: mensajeEditarUsuario
         })
     })
     ///
-    
+
 });
 app.get('/editarUsuario', (req, res) => {
-    Usuario.find({},(err,respuesta)=>{
-        if (err){
+    Usuario.find({}, (err, respuesta) => {
+        if (err) {
             return console.log(err)
         }
 
-        res.render ('editarUsuario',{
-            listado : respuesta
+        res.render('editarUsuario', {
+            listado: respuesta
         })
     })
-    
+
 })
 
 
@@ -369,13 +415,15 @@ app.get('*', (req, res) => {
 //Routers
 //app.use(require('./routers/index'));
 
-mongoose.connect('mongodb://localhost:27017/asignaturas', {useNewUrlParser: true}, (err, resultados)=>{
-    if(err){
-    return console.log('error conectando usuarios');
+mongoose.connect('mongodb://localhost:27017/asignaturas', {
+    useNewUrlParser: true
+}, (err, resultados) => {
+    if (err) {
+        return console.log('error conectando usuarios');
     }
     return console.log('conectado de mongodb');
-  });
+});
 
 app.listen(process.env.PORT, () => {
-    console.log ('servidor en el puerto: '+ process.env.PORT)
+    console.log('servidor en el puerto: ' + process.env.PORT)
 });

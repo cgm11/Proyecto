@@ -29,14 +29,15 @@ return resultado;
 
 });
 
+/*********** Validar si ya no lo necesito Caro
 hbs.registerHelper('crearCursos',(id, nombre, modalidad, valor, descripcion, intensidad, estado)=>{    
     var resultado = "";
     resultado = funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad, estado);
     return resultado;
-})
+})*/
 
-hbs.registerHelper('crearTablaCursos',() => {
-    let resultado =  funciones.crearTablaCursos();
+hbs.registerHelper('crearTablaCursos',(listado) => {
+    let resultado =  funciones.crearTablaCursos(listado);
     return resultado;
 })
 
