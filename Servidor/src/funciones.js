@@ -135,7 +135,7 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 				listaCursos.push(crear);
 				console.log("ENTRO A DUPLICADO");
 				respuestaNew = guardarCurso();
-				resultado = "Curso creado con exito, nombre: "
+				resultado = "Curso creado con exito!!"
 				console.log('valor de resultado: ' + resultado + " y respuestaNew: " + respuestaNew);
 
 			} else {
@@ -147,7 +147,7 @@ const crearCursos = (id, nombre, modalidad, valor, descripcion, intensidad, esta
 			console.log("ENTRO A NUEVO");
 			console.log(listaCursos);
 			respuestaNew = guardarCurso();
-			resultado = "Curso creado con exito, nombre: ";
+			resultado = "Curso creado con exito!!";
 			console.log('valor de resultado: ' + resultado + " y respuestaNew: " + respuestaNew);
 		}
 	} else {
@@ -234,21 +234,22 @@ const crearTablaCursosDisponibles = () => {
 					</thead> \
 					<tbody>";
 		listaCursos.forEach(cur => {
-			if(cur.estado == 'Disponible'){
-			texto = texto +
-				'<tr>' +
-				'<td>' + cur.id + '</td>' +
-				'<td>' + cur.nombre + '</td>' +
-				'<td>' + cur.modalidad + '</td>' +
-				'<td>' + cur.valor + '</td>' +
-				'<td>' + cur.descripcion + '</td>' +
-				'<td>' + cur.intensidad + '</td>' +
-				'<td>' + cur.estado + '</td></tr>'}
+			if (cur.estado == 'Disponible') {
+				texto = texto +
+					'<tr>' +
+					'<td>' + cur.id + '</td>' +
+					'<td>' + cur.nombre + '</td>' +
+					'<td>' + cur.modalidad + '</td>' +
+					'<td>' + cur.valor + '</td>' +
+					'<td>' + cur.descripcion + '</td>' +
+					'<td>' + cur.intensidad + '</td>' +
+					'<td>' + cur.estado + '</td></tr>'
+			}
 		})
 		texto = texto + '</tbody></table>';
 		return texto;
 	} catch (error) {
-		console.log("catch, Error: "+error);
+		console.log("catch, Error: " + error);
 		return "Error";
 	}
 }
@@ -259,25 +260,26 @@ const VerInscritos = (idCurso) => {
 		listarMatriculas();
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
-		console.log('valor de id: '+idCurso);
+		console.log('valor de id: ' + idCurso);
 		let texto = '<table class="table table-striped table-bordered"> \
-					<thead> \
-					<th> Id Curso </th> \
-					<th> Cedula </th> \
-					</thead> \
-					<tbody>';
+	<thead> \
+	<th> Id Curso </th> \
+	<th> Cedula </th> \
+	</thead> \
+	<tbody>';
 		listarMatricula.forEach(cur => {
-			console.log('valor de cur.id: '+cur.id+' y idCurso: '+idCurso)
-			if(cur.id == idCurso){
-			texto = texto +
-				'<tr>' +
-				'<td>' + cur.id + '</td>' +
-				'<td>' + cur.cedula + '</td></tr>'}
+			console.log('valor de cur.id: ' + cur.id + ' y idCurso: ' + idCurso)
+			if (cur.id == idCurso) {
+				texto = texto +
+					'<tr>' +
+					'<td>' + cur.id + '</td>' +
+					'<td>' + cur.cedula + '</td></tr>'
+			}
 		})
 		texto = texto + '</tbody></table>';
 		return texto;
 	} catch (error) {
-		console.log("catch, Error: "+error);
+		console.log("catch, Error: " + error);
 		return "Error";
 	}
 }
@@ -385,32 +387,31 @@ const actualizarUsuario = (cedula, nombreNew, correoNew, telefonoNew, rolNew) =>
 	return ('Resultado editar: ' + mensajeRetorno);
 }
 
-const mensajeVerInscritosEliminar = (idCurso, cedula) =>{
+const mensajeVerInscritosEliminar = (idCurso, cedula) => {
 	let mensajeRetorno = '';
 	listarFinal = [];
 	listarMatriculas();
 	let existe = listarMatricula.find(nom => nom.id == idCurso && nom.cedula == cedula);
-	if(existe){
+	if (existe) {
 		var index = listarMatricula.indexOf(existe);
-		console.log('valor de index: '+index);
+		console.log('valor de index: ' + index);
 		if (index > -1) {
-   			listarMatricula.splice(index, 1);
-						}
+			listarMatricula.splice(index, 1);
+		}
 		mensajeRetorno = guardarMatricula();
 		mensajeRetorno = 'Eliminado exitosamente!!';
 
-	}else{
+	} else {
 		mensajeRetorno = 'No hay registros con el id y cedula ingresados para eliminar';
 	}
-console.log('antes del retorno en mensajeVerInscritosEliminar: '+mensajeRetorno);
-return 	mensajeRetorno;
+	console.log('antes del retorno en mensajeVerInscritosEliminar: ' + mensajeRetorno);
+	return mensajeRetorno;
 
 }
 
 const listarMatriculas = () => {
 	try {
 		listarMatricula = require('../ListaInscritos.json');
-		console.log("Entre a listarMatricula");
 	} catch (error) {
 		listarMatricula = [];
 	}
@@ -427,27 +428,28 @@ const matricularUsuario = (id) => {
 		id: id,
 		cedula: ""
 	};
-	
+
 	if (isNaN(crear.id) | crear.id == null | crear.id == 'undefined' | cedulaGlobal == null | cedulaGlobal == 'undefined' | isNaN(cedulaGlobal) | cedulaGlobal == "") {
 		console.log('NO ENTRO A MATRICULAR');
 	} else {
 		console.log('Entro a matricular cedulaGlobal: ' + cedulaGlobal);
 		let cursoExiste = listaCursos.find(aux => aux.id == crear.id);
-		
+
 		let documentoExiste = listaUsuarios.find(aux => aux.cedula == cedulaGlobal);
 		console.log("Resultado cedula existe:" + documentoExiste + " Resultado curso existe: " + cursoExiste);
 		let duplicadoMatricula = listarMatricula.find(nom => nom.cedula == cedulaGlobal && nom.id == crear.id);
 		if (cursoExiste && documentoExiste) { //Valido si el curso existe
 			if (!duplicadoMatricula) {
-				if(cursoExiste.estado=='Cerrado'){
-					resultado= 'Matricula no exitosa: Curso Cerrado.';
-				}else{
+				if (cursoExiste.estado == 'Cerrado') {
+					resultado = 'Matricula no exitosa: Curso Cerrado.';
+				} else {
 					crear.cedula = cedulaGlobal;
-				listarMatricula.push(crear);
-				console.log("ENTRO A MATRICULAR USUARIO");
-				respuestaNew = guardarMatricula();
-				resultado = "Matricula exitosa ";
-				console.log('valor de resultado: ' + resultado + " y respuestaNew: " + respuestaNew);}
+					listarMatricula.push(crear);
+					console.log("ENTRO A MATRICULAR USUARIO");
+					respuestaNew = guardarMatricula();
+					resultado = "Matricula exitosa ";
+					console.log('valor de resultado: ' + resultado + " y respuestaNew: " + respuestaNew);
+				}
 			} else {
 				resultado = "El usuario ya está inscrito en el curso";
 				console.log("El usuario ya está inscrito en el curso");
@@ -489,7 +491,7 @@ const editarCurso = (idCurso, estadoNew) => {
 				mensajeRetorno = '';
 			} else {
 				console.log('No hay curso con ese id');
-				mensajeRetorno = 'Resultado editar: ' + 'Cambio no exitoso, no hay curso con ese id';
+				mensajeRetorno = 'Resultado editar: Cambio no exitoso, no hay curso con ese id';
 			}
 		}
 		return mensajeRetorno;
@@ -499,15 +501,15 @@ const editarCurso = (idCurso, estadoNew) => {
 	}
 }
 
-	const mostrarMisCursos = () => {
-		console.log("CEDULA GLOBAL: " + cedulaGlobal);
-		let result = '';
-		let aux = '';
-		try {
-			if (cedulaGlobal == null || cedulaGlobal == 'undefined' || isNaN(cedulaGlobal)) {
+const mostrarMisCursos = () => {
+	console.log("CEDULA GLOBAL: " + cedulaGlobal);
+	let result = '';
+	let aux = '';
+	try {
+		if (cedulaGlobal == null || cedulaGlobal == 'undefined' || isNaN(cedulaGlobal)) {
 			console.log("No existe cedulaMisCursos no entra a función mostrarMisCursos");
 			result = "Documento no valido";
-		}else{			
+		} else {
 			console.log("Entro mostrarMisCursos función");
 			listarMatriculas();
 			listar();
@@ -529,7 +531,7 @@ const editarCurso = (idCurso, estadoNew) => {
 					//console.log("PRUEBA: " + listaUsuarios.find(nom => cur.cedula == cedulaGlobal));
 					aux = 'existe';
 					console.log("Entro a If cedula: " + cedulaGlobal);
-					let curso = listaCursos.find(aux => aux.id == cur.id);					
+					let curso = listaCursos.find(aux => aux.id == cur.id);
 					texto = texto +
 						'<tr>' +
 						'<td>' + curso.id + '</td>' +
@@ -538,33 +540,59 @@ const editarCurso = (idCurso, estadoNew) => {
 						'<td>' + curso.valor + '</td>' +
 						'<td>' + curso.descripcion + '</td>' +
 						'<td>' + curso.intensidad + '</td>'
-				}else{
+				} else {
 					console.log("se salto if");
 				}
 			})
+			listarMatricula = [];
 			texto = texto + '</tbody></table>';
-			if(aux == ''){
+			if (aux == '') {
 				return '<b>No tiene ningún curso asociado</b><br><br>';
-			}else{
-			return texto;
+			} else {
+				return texto;
 			}
 		}
-		} catch (error) {
-			console.log(error);
-			return "Error";
+	} catch (error) {
+		console.log(error);
+		return "Error";
+	}
+}
+
+const guardarDocumentoGlobal = (doc) => {
+	console.log("ANTES DE ASIGNAR DOCUMENTO: " + cedulaGlobal);
+	cedulaGlobal = doc;
+	console.log("DESPUES DE ASIGNAR DOCUMENTO: " + cedulaGlobal);
+}
+const borrarDocumentoGlobal = () => {
+	console.log("ENTRO A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
+	cedulaGlobal = ""
+	console.log("DESPUES A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
+}
+
+const EliminarInscripcionAspirante = (idCurso) => {
+	let mensajeRetorno = '';
+	listarFinal = [];
+	listarMatriculas();
+	let crear = {
+		idCurso: idCurso
+	}
+	let existe = listarMatricula.find(nom => nom.id == crear.idCurso && nom.cedula == cedulaGlobal);
+	if (existe) {
+		var index = listarMatricula.indexOf(existe);
+		console.log('valor de index: ' + index);
+		if (index > -1) {
+			listarMatricula.splice(index, 1);
 		}
+		mensajeRetorno = guardarMatricula();
+		mensajeRetorno = 'Eliminado exitosamente!!';
+
+	} else {
+		mensajeRetorno = 'No hay registros con el id y cedula ingresados para eliminar';
 	}
-	
-	const guardarDocumentoGlobal = (doc) =>{
-		console.log("ANTES DE ASIGNAR DOCUMENTO: " + cedulaGlobal);
-		cedulaGlobal = doc;
-		console.log("DESPUES DE ASIGNAR DOCUMENTO: " + cedulaGlobal);
-	}
-	const borrarDocumentoGlobal = () =>{
-		console.log("ENTRO A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
-		cedulaGlobal = ""
-		console.log("DESPUES A BORRAR CEDULA GLOBAL: " + cedulaGlobal);
-	}
+	console.log('antes del retorno en mensajeVerInscritosEliminar: ' + mensajeRetorno);
+	return mensajeRetorno;
+
+}
 
 
 module.exports = {
@@ -590,5 +618,6 @@ module.exports = {
 	VerInscritos,
 	mensajeVerInscritosEliminar,
 	guardarDocumentoGlobal,
-	borrarDocumentoGlobal
+	borrarDocumentoGlobal,
+	EliminarInscripcionAspirante
 }

@@ -1,19 +1,19 @@
 <div class="container">
 {{>header}}
 {{>navCoordinador}}
-
-<p>
+<br>
+<h4>
     Bienvenidos a la pagina de mostrar cursos disponibles e inscritos
-</p>
-   
+</h4>
+<br>
 {{{crearTablaCursosDisponibles}}}
 
 {{mensajeError}}
+<br>
 <p>
-    Para ver los inscritos ingrese el id del curso
+    <b>Para ver los inscritos ingrese el id del curso</b>
 </p>
 <form action="/verInscritos" method="POST">
-    <br>
     <div class="row">
         <div class="col">
             <label>Id Curso</label>
@@ -33,10 +33,9 @@
 {{{mensajeVerInscritos}}}
 </div>
 <p>
-    Para eliminar los aspirantes inscritos ingrese el id del curso y el numero de cedula del aspirante
+    <b>Para eliminar los aspirantes inscritos ingrese el id del curso y el numero de cedula del aspirante</b>
 </p>
 <form action="/verInscritos" method="POST">
-    <br>
     <div class="row">
         <div class="col">
             <label>Id Curso</label>
@@ -57,5 +56,5 @@
 </form>
 </div>
 
-{{mensajeVerInscritosEliminar}}
+<b>{{mensajeVerInscritosEliminar}}</b>
 
