@@ -3,16 +3,15 @@
 {{>navCoordinador}}
 
 <br>    
-<b>{{crearCursos id nombre modalidad valor descripcion intensidad estado}}</b>
+<b>{{mostrar}}</b>
 <br>
 <b>{{mensajeEditarCurso}}</b>
    
-{{{crearTablaCursos}}}
+{{{crearTablaCursos listado}}}
 
 <h1>
     Editar curso
 </h1>
-<b>{{EditarCurso idCurso estado}}</b>
 <form action="/mostrarCursos" method="POST">
     <div class="row">
         <div class="col">

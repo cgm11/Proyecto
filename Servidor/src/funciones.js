@@ -180,32 +180,31 @@ const listarOtro = () => {
 
 }
 
-const crearTablaCursos = () => {
+const crearTablaCursos = (listar) => {
 	try {
 		console.log("Entro");
-		listarOtro();
 		console.log("Paso listar");
-		let texto = "<table class='table table-striped table-bordered'> \
-					<thead> \
-					<th> Id </th> \
-					<th> Nombre </th> \
-					<th> Modalidad </th> \
-					<th> Valor </th> \
-					<th> Descripción </th> \
-					<th> Intensidad horaria </th> \
-					<th> Estado </th> \
-					</thead> \
-					<tbody>";
-		listaCursos.forEach(cur => {
+		let texto = `<table class='table table-striped table-bordered'> 
+					<thead> 
+					<th> Id </th> 
+					<th> Nombre </th> 
+					<th> Modalidad </th> 
+					<th> Valor </th> 
+					<th> Descripción </th> 
+					<th> Intensidad horaria </th> 
+					<th> Estado </th> 
+					</thead> 
+					<tbody>`;
+			listar.forEach(curso => {
 			texto = texto +
-				'<tr>' +
-				'<td>' + cur.id + '</td>' +
-				'<td>' + cur.nombre + '</td>' +
-				'<td>' + cur.modalidad + '</td>' +
-				'<td>' + cur.valor + '</td>' +
-				'<td>' + cur.descripcion + '</td>' +
-				'<td>' + cur.intensidad + '</td>' +
-				'<td>' + cur.estado + '</td></tr>'
+				`<tr>
+				<td> ${curso.idcurso} </td>
+				<td> ${curso.nombre} </td>
+				<td> ${curso.modalidad} </td>
+				<td> ${curso.valor} </td>
+				<td> ${curso.descripcion} </td>
+				<td> ${curso.intensidad} </td>
+				<td> ${curso.estado} </td></tr>`
 		})
 		texto = texto + '</tbody></table>';
 		return texto;
