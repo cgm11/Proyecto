@@ -1,3 +1,5 @@
+//Requires
+require('./config/config');
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -5,13 +7,22 @@ const hbs = require('hbs');
 const bodyParser = require('body-parser');
 require('./helper')
 const funciones = require('./funciones');
+const mongoose = require('mongoose');
+const Usuario = require('./models/usuario');
 
+//Paths
 const directoriopublico = path.join(__dirname, '../public');
 const directoriopartials = path.join(__dirname, '../partials');
+
+//Static
 app.use(express.static(directoriopublico));
+
 hbs.registerPartials(directoriopartials);
+
+//BodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//hbs
 app.set('view engine', 'hbs');
 
 app.get('/', (req, res) => {
@@ -71,9 +82,33 @@ app.post('/listaCursos', (req, res) => {
         nombre: req.body.nombre,
         telefono: req.body.telefono,
     }
-    let response = funciones.buscarDuplicado(loginData);
+    let usuario = new Usuario ({
+        nombre: req.body.nombre,
+        cedula: parseInt(req.body.documento),
+        correo: req.body.correo,
+        telefono: req.body.telefono,
+        rol: "aspirante"
+    })
+    console.log('usuario: '+usuario.nombre+', cedula: '+usuario.cedula)
+    console.log('correo: '+usuario.correo+', telefono: '+usuario.telefono)
+    usuario.save((err, resultado) => {
+        if(err){
+            //resultado2 = "ERROR EN GUARDADO DE MONGO";
+            res.render('index', {
+            nombre: loginData.nombre,
+            mensajeUsuario: 'error: ' + err
+        });
+        }
+        res.render('listaCursos', {
+            nombre: loginData.nombre,
+            resultadoNuevo: 'Ingreso Exitoso'
+        });
+        //resultado2 = ("Ingreso exitoso: "+resultado);
+        //console.log('el valor de resultado en mongo es: '+ resultado +', error: '+ err)
+    });
+    //let response = funciones.buscarDuplicado(loginData);
     //console.log('el resultado de response es: '+response);
-    if (response == null) {
+    /*if (response == null) {
         res.render('listaCursos', {
             nombre: req.body.nombre,
             correo: req.body.correo,
@@ -86,7 +121,7 @@ app.post('/listaCursos', (req, res) => {
             cedula: parseInt(req.body.documento),
             mensajeUsuario: "USUARIO YA REGISTRADO"
         });
-    }
+    }*/
 });
 
 app.get('/verInscritos', (req, res) => {
@@ -194,6 +229,7 @@ app.post('/aspirante', (req, res) => {
 
 app.post('/editarUsuario', (req, res) => {
     let mensajeEditarUsuario = '';
+    let listaUsuariosMongo = [];
     let loginData = {
         correo: req.body.correo,
         cedula: parseInt(req.body.cedula),
@@ -202,16 +238,78 @@ app.post('/editarUsuario', (req, res) => {
         rol: req.body.rol
     }
     console.log("valor de cedula: " + loginData.cedula)
+    let arregloUpdate = {};
     if (!isNaN(loginData.cedula)) {
-        console.log("Entre a Editar usuario");
-        mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula, loginData.nombre, loginData.correo, loginData.telefono, loginData.rol);
+        console.log("Entre a Editar usuario Mongo");
+        if (req.body.nombre != null && req.body.nombre != "") {
+            let nombre = "nombre";
+            //console.log('valores de existe, nombre ' + existe.nombre);
+            arregloUpdate[nombre] = req.body.nombre;
+        }
+        if (req.body.correo != null && req.body.correo != "") {
+            let correo = "correo";
+            //console.log('valores de existe, correo ' + existe.correo);
+            arregloUpdate[correo] = req.body.correo;
+        }
+        if (req.body.telefono != null && req.body.telefono != "") {
+            let telefono = "telefono";
+            //console.log('valores de existe, telefono ' + existe.telefono);
+            arregloUpdate[telefono] = req.body.telefono;
+        }
+        if (req.body.rol != null && req.body.rol != "" && req.body.rol != "-") {
+            let rol = "rol";
+            //console.log('valores de existe, rol ' + existe.rol);
+            arregloUpdate[rol] = req.body.rol;
+        }
+        //let arregloUpdate = {};
+        let update = 'Update6';
+        let nombreU = 'nombre';
+        //arregloUpdate[nombreU] = update;
+        //let estudianteNota = arregloUpdate.find(function(notaEst ) {
+        //return notaEst.id == 12345});
+        Usuario.findOneAndUpdate({cedula : parseInt(req.body.cedula)}, {$set:arregloUpdate}, {new : true, runValidators: true}, (err, resultados) => {
+        if (err){
+            return console.log(err)
+        }
+        //console.log('si actualice! usuarios nuevos: '+resultados)
+        //res.render ('actualizar', {
+          //  nombre : resultados.nombre,
+            //matematicas : resultados.matematicas,
+            //ingles : resultados.ingles,
+            //programacion : resultados.programacion
+        //})
+    })  
+
+        //mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula, loginData.nombre, loginData.correo, loginData.telefono, loginData.rol);
     }
-    res.render('editarUsuario', {
-        mensajeEditarUsuario: mensajeEditarUsuario
+    ///
+    Usuario.find({},(err,respuesta)=>{
+        if (err){
+            //res.render('editarUsuario', {
+        //mensajeEditarUsuario: mensajeEditarUsuario,
+        listado : ""
+    //})
+            return console.log(err)
+        }
+        res.render ('editarUsuario',{
+            listado : respuesta,
+            mensajeEditarUsuario: mensajeEditarUsuario
+        })
     })
+    ///
+    
 });
 app.get('/editarUsuario', (req, res) => {
-    res.render('editarUsuario')
+    Usuario.find({},(err,respuesta)=>{
+        if (err){
+            return console.log(err)
+        }
+
+        res.render ('editarUsuario',{
+            listado : respuesta
+        })
+    })
+    
 })
 
 
@@ -219,6 +317,20 @@ app.get('*', (req, res) => {
     res.render('error')
 })
 
-app.listen(3000, () => {
-    console.log('Escuchando en el puerto 3000');
+//app.listen(3000, () => {
+//  console.log ('servidor en el puerto 3000')
+//});
+
+//Routers
+//app.use(require('./routers/index'));
+
+mongoose.connect('mongodb://localhost:27017/asignaturas', {useNewUrlParser: true}, (err, resultados)=>{
+    if(err){
+    return console.log('error conectando usuarios');
+    }
+    return console.log('conectado de mongodb');
+  });
+
+app.listen(process.env.PORT, () => {
+    console.log ('servidor en el puerto: '+ process.env.PORT)
 });
