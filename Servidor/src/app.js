@@ -9,6 +9,9 @@ require('./helper')
 const funciones = require('./funciones');
 const mongoose = require('mongoose');
 const Usuario = require('./models/usuario');
+const bcrypt = require('bcrypt');
+const session = require('express-session')
+var MemoryStore = require('memorystore')(session)
 
 //Paths
 const directoriopublico = path.join(__dirname, '../public');
@@ -18,6 +21,17 @@ const directoriopartials = path.join(__dirname, '../partials');
 app.use(express.static(directoriopublico));
 
 hbs.registerPartials(directoriopartials);
+
+//### Para usar las variables de sesión
+app.use(session({
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+        checkPeriod: 86400000 // prune expired entries every 24h
+        }),
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: true
+}))
 
 //BodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,31 +48,51 @@ app.get('/', (req, res) => {
 });
 
 app.post('/ingreso', (req, res) => {
-    let loginData = {
-        correo: req.body.correo,
-        cedula: parseInt(req.body.documento),
-    }
-    let response = funciones.buscarDuplicado(loginData);
-    funciones.guardarDocumentoGlobal(loginData.cedula);
+    let rolEncontrado = '';
+    Usuario.findOne({nombreUser : req.body.nombreUser}, (err, resultados) => {
+        if (err){
+            return console.log(err)
+        }
+        if(!resultados){
+            return res.render ('index', {
+            mensajeUsuario : "Usuario y/o contraseña erronea"           
+            })
+        }
+        if(!bcrypt.compareSync(req.body.password, resultados.password)){
+            return res.render ('index', {
+            mensajeUsuario : "Usuario y/o contraseña erronea"           
+            })
+        }
+        //Para crear las variables de sesión
+            req.session.usuario = resultados._id;
+            req.session.nombre = resultados.nombre;
+            req.session.cedula = resultados.cedula;
+    rolEncontrado = resultados.rol;
+    //let loginData = {
+    //    correo: req.body.correo,
+    //    cedula: parseInt(req.body.documento),
+    //}
+    //let response = funciones.buscarDuplicado(loginData);
+    funciones.guardarDocumentoGlobal(resultados.cedula);
     //console.log('el resultado de response es: '+response);
-    if (response != null) {
-        let rolEncontrado = funciones.retornarRol(loginData);
+    //if (response != null) {
+        //let rolEncontrado = funciones.retornarRol(loginData);
         if (rolEncontrado == "aspirante") {
             res.render('aspirante', {
-                correo: req.body.correo,
-                cedula: parseInt(req.body.documento)
+                correo: resultados.correo,
+                cedula: resultados.documento
             })
         } else {
             res.render('coordinador', {
-                correo: req.body.correo,
-                cedula: parseInt(req.body.documento)
+                correo: resultados.correo,
+                cedula: resultados.documento
             })
         }
-    }
-    else {
-        res.render('registro')
-    }
-
+    //}
+    //else {
+    //    res.render('registro')
+    //}
+    })
 })
 
 app.post('/registro', (req, res) => {
@@ -87,10 +121,13 @@ app.post('/listaCursos', (req, res) => {
         cedula: parseInt(req.body.documento),
         correo: req.body.correo,
         telefono: req.body.telefono,
-        rol: "aspirante"
+        rol: "aspirante",
+        nombreUser : req.body.nombreUser,
+        password : bcrypt.hashSync(req.body.password, 10)
     })
     console.log('usuario: '+usuario.nombre+', cedula: '+usuario.cedula)
     console.log('correo: '+usuario.correo+', telefono: '+usuario.telefono)
+    console.log('nombreUser: '+usuario.nombreUser+', password: '+usuario.password)
     usuario.save((err, resultado) => {
         if(err){
             //resultado2 = "ERROR EN GUARDADO DE MONGO";
@@ -267,17 +304,12 @@ app.post('/editarUsuario', (req, res) => {
         //arregloUpdate[nombreU] = update;
         //let estudianteNota = arregloUpdate.find(function(notaEst ) {
         //return notaEst.id == 12345});
-        Usuario.findOneAndUpdate({cedula : parseInt(req.body.cedula)}, {$set:arregloUpdate}, {new : true, runValidators: true}, (err, resultados) => {
+        Usuario.findOneAndUpdate({cedula : parseInt(req.body.cedula)}, {$set:arregloUpdate}, {new : true, runValidators: true, context: 'query'}, (err, resultados) => {
+            //  findOneAndUpdate({nombre :           req.body.nombre}, req.body,             {new : true, runValidators: true, context: 'query' }, (err, resultados) => {
         if (err){
             return console.log(err)
         }
-        //console.log('si actualice! usuarios nuevos: '+resultados)
-        //res.render ('actualizar', {
-          //  nombre : resultados.nombre,
-            //matematicas : resultados.matematicas,
-            //ingles : resultados.ingles,
-            //programacion : resultados.programacion
-        //})
+        
     })  
 
         //mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula, loginData.nombre, loginData.correo, loginData.telefono, loginData.rol);
