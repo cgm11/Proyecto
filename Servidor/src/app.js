@@ -10,6 +10,7 @@ const funciones = require('./funciones');
 const mongoose = require('mongoose');
 const Usuario = require('./models/usuario');
 const Curso = require('./models/cursos');
+const Inscrito = require('./models/inscritos');
 const bcrypt = require('bcrypt');
 const session = require('express-session')
 var MemoryStore = require('memorystore')(session)
@@ -70,6 +71,10 @@ app.post('/ingreso', (req, res) => {
             req.session.usuario = resultados._id;
             req.session.nombre = resultados.nombre;
             req.session.cedula = resultados.cedula;
+            req.session.correo = resultados.correo;
+            req.session.telefono = resultados.telefono;
+            req.session.rol = resultados.rol;
+            req.session.nombreUser = resultados.nombreUser;
     rolEncontrado = resultados.rol;
     //let loginData = {
     //    correo: req.body.correo,
@@ -294,22 +299,87 @@ app.post('/aspirante', (req, res) => {
     console.log('Entro a post');
     let mensajeVerInscritos = '';
     let mensajeVerInscritosEliminar = '';
+    let mensajeMatricular='Hola';
     let loginData = {
         id: parseInt(req.body.id),
         idEliminar: parseInt(req.body.idEliminar)
     }
-    console.log('idCursoVer: ' + loginData.idCursoVer + ', cedula: ' + loginData.cedula + ' y idCurso: ' + loginData.idCurso);
-    if (!isNaN(loginData.idEliminar)) {
+    console.log('id: ' + loginData.id + ' y idEliminar: ' + loginData.idEliminar);
+    if (!isNaN(loginData.id)) {
+        let nombreCurso='';
+        console.log('si entre al if para matricular');
+        Curso.findOne({idcurso : parseInt(req.body.id)}, (err, resultados) => {
+            console.log('el valor de resultados para findOne de busqueda curso es: '+ resultados)
+           if(err){
+            console.log('error al consultar curso');
+            return res.render('aspirante', {                    
+                    mensajeMatricular: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
+                })
+            }
+            if(!resultados){
+                console.log('El id del curso no existe, por favor validar');
+            return res.render('aspirante', {                    
+                mensajeMatricular: "El id del curso no existe, por favor validar"
+            })
+            }else{
+                let tamanoProblema = 0;
+                nombreCurso = resultados.nombre;
+                let cedulaBuscada = req.session.cedula;
+                let idCursoBuscado = parseInt(req.body.id);
+                console.log('VOY A HACER LA CONSULTA CON idCurso: '+parseInt(req.body.id)+' y cedula: '+req.session.cedula);
+                Inscrito.find({cedula : cedulaBuscada, idCurso :idCursoBuscado}, (erro, result) => {
+                        console.log('valor de resultadosInscrito: '+result)
+                        tamanoProblema = result.length;
+                        if(erro){
+                                console.log('error al consultar inscrito');
+                                return res.render('aspirante', {                    
+                                mensajeMatricular: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
+                                })
+                        }else if(!result){console.log('Vamos bien por aca se puede matricular nueva opcion')
+                    }else if(result && (tamanoProblema > 0)){
+                    console.log('el tamaño de result es: '+ result.length);                
+                    console.log('El aspirante ya esta inscrito en este curso, por favor validar');
+                    return res.render('aspirante', {                    
+                    mensajeMatricular: "El aspirante ya esta inscrito en este curso, por favor validar"
+                    })
+            }else{
+                console.log('Vamos bien por aca se puede matricular')
+                let inscrito = new Inscrito({
+                idCurso: loginData.id,
+                nombreCurso: nombreCurso,
+                nombre: req.session.nombre,
+                cedula: req.session.cedula,
+                correo: req.session.correo,
+                telefono: req.session.telefono
+                })
+                inscrito.save((err, resultadoinsripcion) => {
+            if(err){
+                        console.log('error al consultar inscrito');
+                        return res.render('aspirante', {                    
+                        mensajeMatricular: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
+                        })
+            }
+            return res.render('aspirante', { 
+            mensajeMatricular: "Matricula Exitosa"
+            })
+            })
+                
+                }
+            })
+    }})
+    }
+    else if (!isNaN(loginData.idEliminar)) {
         console.log("Entre a mensajeVerInscritosEliminar ");
         mensajeVerInscritosEliminar = funciones.EliminarInscripcionAspirante(loginData.idEliminar);
         console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
         console.log("Entre a mensajeVerInscritos curso");
     }
-    res.render('aspirante', {
+    /*res.render('aspirante', {
         id: parseInt(req.body.id),
         idEliminar: parseInt(req.body.idEliminar),
-        mensajeVerInscritosEliminar: mensajeVerInscritosEliminar
-    })
+        mensajeVerInscritosEliminar: mensajeVerInscritosEliminar,
+        mensajeMatricular : mensajeMatricular
+    })*/
 });
 
 
