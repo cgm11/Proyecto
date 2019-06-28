@@ -96,9 +96,9 @@ hbs.registerHelper('matricularUsuario',(id)=>{
     return resultado;
 })
 
-hbs.registerHelper('misCursos',()=>{    
+hbs.registerHelper('misCursos',(listadoMisCursos)=>{    
     var resultado = "";
-    resultado = funciones.mostrarMisCursos();
+    resultado = funciones.mostrarMisCursos(listadoMisCursos);
     return resultado;
 })
 

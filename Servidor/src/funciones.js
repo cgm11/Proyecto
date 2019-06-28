@@ -499,57 +499,23 @@ const editarCurso = (idCurso, estadoNew) => {
 	}
 }
 
-const mostrarMisCursos = () => {
-	console.log("CEDULA GLOBAL: " + cedulaGlobal);
-	let result = '';
-	let aux = '';
+const mostrarMisCursos = (listadoMisCursos) => {	
 	try {
-		if (cedulaGlobal == null || cedulaGlobal == 'undefined' || isNaN(cedulaGlobal)) {
-			console.log("No existe cedulaMisCursos no entra a función mostrarMisCursos");
-			result = "Documento no valido";
-		} else {
-			console.log("Entro mostrarMisCursos función");
-			listarMatriculas();
-			listar();
-			listarOtro();
-			console.log("Paso listar");
 			let texto = "<table class='table table-striped table-bordered'> \
 						<thead> \
 						<th> Id </th> \
 						<th> Nombre Curso </th> \
-						<th> Modalidad </th> \
-						<th> Valor </th> \
-						<th> Descripción </th> \
-						<th> Intensidad horaria </th> \
 						</thead> \
 						<tbody>";
-			listarMatricula.forEach(cur => {
-				console.log("Entro a forEach, valor id: " + cur.id + "Valor cedula: " + cur.cedula);
-				if (listaUsuarios.find(nom => cur.cedula == cedulaGlobal)) {
-					//console.log("PRUEBA: " + listaUsuarios.find(nom => cur.cedula == cedulaGlobal));
-					aux = 'existe';
-					console.log("Entro a If cedula: " + cedulaGlobal);
-					let curso = listaCursos.find(aux => aux.id == cur.id);
+				listadoMisCursos.forEach(curso => {
 					texto = texto +
 						'<tr>' +
-						'<td>' + curso.id + '</td>' +
-						'<td>' + curso.nombre + '</td>' +
-						'<td>' + curso.modalidad + '</td>' +
-						'<td>' + curso.valor + '</td>' +
-						'<td>' + curso.descripcion + '</td>' +
-						'<td>' + curso.intensidad + '</td>'
-				} else {
-					console.log("se salto if");
-				}
+						'<td>' + curso.idCurso + '</td>' +
+						'<td>' + curso.nombreCurso + '</td>'				
 			})
-			listarMatricula = [];
-			texto = texto + '</tbody></table>';
-			if (aux == '') {
-				return '<b>No tiene ningún curso asociado</b><br><br>';
-			} else {
+			texto = texto + '</tbody></table>';			
 				return texto;
-			}
-		}
+			
 	} catch (error) {
 		console.log(error);
 		return "Error";
@@ -640,7 +606,7 @@ const cursosDocente = (cedula, listado) => {
 				listado.forEach(curso => {
 					texto = texto +
 						'<tr>' +
-						'<td>' + curso.id + '</td>' +
+						'<td>' + curso.idcurso + '</td>' +
 						'<td>' + curso.nombre + '</td>' +
 						'<td>' + curso.modalidad + '</td>' +
 						'<td>' + curso.valor + '</td>' +
