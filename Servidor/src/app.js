@@ -159,7 +159,6 @@ app.post('/listaCursos', (req, res) => {
             
         usuario.save((err, resultado) => {
             if(err){
-            //resultado2 = "ERROR EN GUARDADO DE MONGO";
             return res.render('index', {
             nombre: loginData.nombre,
             mensajeUsuario: 'error: ' + err
@@ -175,26 +174,8 @@ app.post('/listaCursos', (req, res) => {
             mensajeUsuario : "Usuario ya registrado"           
             })
         }
-})
-        //resultado2 = ("Ingreso exitoso: "+resultado);
-        //console.log('el valor de resultado en mongo es: '+ resultado +', error: '+ err)
+    })
     
-    //let response = funciones.buscarDuplicado(loginData);
-    //console.log('el resultado de response es: '+response);
-    /*if (response == null) {
-        res.render('listaCursos', {
-            nombre: req.body.nombre,
-            correo: req.body.correo,
-            cedula: parseInt(req.body.documento),
-            telefono: req.body.telefono,
-        });
-    } else {
-        res.render('index', {
-            correo: req.body.correo,
-            cedula: parseInt(req.body.documento),
-            mensajeUsuario: "USUARIO YA REGISTRADO"
-        });
-    }*/
 });
 
 app.get('/verInscritos', (req, res) => {
@@ -419,9 +400,30 @@ app.post('/aspirante', (req, res) => {
     }
     else if (!isNaN(loginData.idEliminar)) {
         console.log("Entre a mensajeVerInscritosEliminar ");
-        mensajeVerInscritosEliminar = funciones.EliminarInscripcionAspirante(loginData.idEliminar);
-        console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
-        console.log("Entre a mensajeVerInscritos curso");
+        //mensajeVerInscritosEliminar = funciones.EliminarInscripcionAspirante(loginData.idEliminar);
+        //console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
+        //console.log("Entre a mensajeVerInscritos curso");
+        ///
+        let cedulaBuscada = req.session.cedula;
+        let idCursoBuscado = parseInt(req.body.idEliminar);
+            Inscrito.findOneAndDelete({cedula : cedulaBuscada, idCurso :idCursoBuscado}, (err, resultados) => {
+        if (err){console.log('error al eliminar inscrito');
+                                return res.render('aspirante', {                    
+                                mensajeVerInscritosEliminar: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
+                                })
+        }
+        if(!resultados){
+            console.log('No hay resultados para eliminar');
+            return res.render('aspirante', {                    
+                    mensajeVerInscritosEliminar: "No hay resultados para eliminar"
+                })
+        }
+            console.log('Eliminado exitosamente');
+            return res.render('aspirante', {                    
+                    mensajeVerInscritosEliminar: "Curso "+ idCursoBuscado +"Eliminado exitosamente"
+                })
+    })  
+        ///
     }
     /*res.render('aspirante', {
         id: parseInt(req.body.id),
