@@ -81,20 +81,35 @@ app.post('/ingreso', (req, res) => {
     //    cedula: parseInt(req.body.documento),
     //}
     //let response = funciones.buscarDuplicado(loginData);
-    funciones.guardarDocumentoGlobal(resultados.cedula);
+    //funciones.guardarDocumentoGlobal(resultados.cedula);
     //console.log('el resultado de response es: '+response);
     //if (response != null) {
         //let rolEncontrado = funciones.retornarRol(loginData);
         if (rolEncontrado == "aspirante") {
-            res.render('aspirante', {
-                correo: resultados.correo,
-                cedula: resultados.documento
+            Curso.find({}).exec((err, resultado) => {
+                if (err) {
+                    return console.log(err)
+                }
+                res.render('aspirante', {
+                    listado: resultado
+                })
             })
-        } else {
+        } else if(rolEncontrado == "coordinador")  {
             res.render('coordinador', {
                 correo: resultados.correo,
                 cedula: resultados.documento
             })
+        } else {
+            Curso.find({docente: parseInt(resultados.documento)}).exec((err, resultado) => {
+                if (err) {
+                    return console.log(err)
+                }
+                res.render('docente', {
+                    listado: resultado,
+                    correo: resultados.correo,
+                    cedula: resultados.documento,                          
+                })
+            })           
         }
     //}
     //else {
@@ -220,21 +235,55 @@ app.post('/mostrarCursos', (req, res) => {
     }
 
     if (!isNaN(loginData.idCurso)) {
-        console.log("Entre a Editar curso");
-        Curso.findOneAndUpdate({idcurso: loginData.idCurso},{estado : req.body.estado}, {new: true}, (err, resultado) => {
-            if (err) {
-                return console.log(err)
-            }
-            Curso.find({}).exec((err, resultado) => {
-                if (err) {
-                    return console.log(err)
-                }
-                res.render('mostrarCursos', {
-                    mostrar: "Curso actualizado con exito",
-                    listado: resultado
-                })
-            })
-        })
+        console.log("Entre a Editar curso");  
+        Curso.findOne({idcurso : parseInt(req.body.idCurso)}, (err, resultados) => {
+            if(err){
+                 res.render('mostrarCursos', {                    
+                     mostrar: "Se presentaron incovenientes en el proceso de actualizar por favor vuelva a intentar"
+                 })
+             }
+             if(!resultados){
+                Curso.find({}).exec((err, resultado) => {
+                    if (err) {
+                        return console.log(err)
+                    }
+                    res.render('mostrarCursos', {
+                        mostrar: "El id del curso no existe",
+                        listado: resultado
+                    })
+                })           
+             }else{  
+                 if(req.body.estado == "Disponible"){
+                    Curso.findOneAndUpdate({idcurso: loginData.idCurso},{estado : req.body.estado}, {new: true}, (err, resultado) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        Curso.find({}).exec((err, resultado) => {
+                            if (err) {
+                                return console.log(err)
+                            }
+                            res.render('mostrarCursos', {
+                                mostrar: "Curso actualizado con exito",
+                                listado: resultado
+                            })
+                        })
+                    })
+                 }else{
+                    Usuario.find({rol: "docente"}).exec((err, resultado) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        res.render('asignarDocente', {
+                            mostrar: "Por favor asigne un docente para cerrar el curso con id: ",
+                            listado: resultado,
+                            id: req.body.idCurso,
+                            estado: req.body.estado                            
+                        })
+                    })
+                 }                
+             }
+            })  
+        
     } else {
         let curso = new Curso({
             idcurso: parseInt(req.body.idcurso),
@@ -471,6 +520,48 @@ app.get('/editarUsuario', (req, res) => {
         })
     })
 
+})
+
+app.post('/asignarDocente', (req, res) => {
+    Usuario.findOne({cedula: parseInt(req.body.documento)}, (err, respuesta) => {
+        if (err) {            
+            return console.log(err)
+        }
+        console.log(respuesta);
+        if(!respuesta){
+            Curso.find({}).exec((err, resultado) => {
+                if (err) {
+                    return console.log(err)
+                }
+                res.render('mostrarCursos', {
+                    mostrar: "Documento del docente incorrecto por favor validar",
+                    listado: resultado
+                })
+            })
+        } else{
+            Curso.findOneAndUpdate({idcurso : parseInt(req.body.id)}, {estado: "Cerrado", docente:  parseInt(req.body.documento)}, (err, resultado) => {
+                if (err){
+                    return console.log(err)
+                }
+        
+                if(!resultado){
+                    res.render ('asignarDocente', {
+                        mostrar : "No se encontro el id del curso"			
+                })        
+                } else{        
+                    Curso.find({}).exec((err, resultado) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        res.render('mostrarCursos', {
+                            mostrar: "Docente asignado con exito",
+                            listado: resultado
+                        })
+                    })
+                }
+            })
+        }
+    })    
 })
 
 

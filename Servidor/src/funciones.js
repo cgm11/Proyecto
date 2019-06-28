@@ -283,25 +283,24 @@ const VerInscritos = (idCurso) => {
 	}
 }
 
-const mostrarCursosAspirante = () => {
+const mostrarCursosAspirante = (listar) => {
 	try {
-		listarOtro();
 		let texto = "";
-		listaCursos.forEach(cur => {
+		listar.forEach(cur => {
 			if (cur.estado == 'Disponible') {
 				texto = texto +
 					'<div class="accordion" id="accordionExample"> \
 				<div class="card"> \
-						<div class="card-header" id="heading' + cur.id + '">  \
+						<div class="card-header" id="heading' + cur.idcurso + '">  \
 							<h2 class="mb-0"> \
-							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '">' +
+							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.idcurso + '" aria-expanded="false" aria-controls="collapse' + cur.idcurso + '">' +
 					'Nombre: ' + cur.nombre + '<br>Valor: ' + cur.valor + '<br>Descripción: ' + cur.descripcion +
 					'</button> \
 							</h2> \
 						</div> \
-						<div id="collapse' + cur.id + '" class="collapse" aria-labelledby="heading' + cur.id + '" data-parent="#accordionExample"> \
+						<div id="collapse' + cur.idcurso + '" class="collapse" aria-labelledby="heading' + cur.idcurso + '" data-parent="#accordionExample"> \
 							<div class="card-body">' +
-					'Id curso: ' + cur.id + '<br>Descripción :' + cur.descripcion + '<br>Modalidad: ' + cur.modalidad + '<br>Valor: ' + cur.valor +
+					'Id curso: ' + cur.idcurso + '<br>Descripción :' + cur.descripcion + '<br>Modalidad: ' + cur.modalidad + '<br>Intensidad horaria: ' + cur.intensidad +
 					'</div> \
 						</div> \
 				</div> \
@@ -594,6 +593,70 @@ const EliminarInscripcionAspirante = (idCurso) => {
 }
 
 
+const mostrarDocentes = (listar, id) => {
+	try {
+		let texto = `<table class='table table-striped table-hover'> 
+					<thead class='thead-dark'> 
+					<th> Id </th> 
+					<th> Nombre </th> 
+					<th> Documento </th> 
+					<th> Correo </th>
+					<th> Telefono </th>
+					<th></th> 
+					</thead> 
+					<tbody>`;
+			listar.forEach(aux => {
+			texto = texto +
+				`<tr>
+				<td> ${id} </td>
+				<td name="nombre" value="${aux.nombre}"> ${aux.nombre} </td>
+				<td> ${aux.cedula} </td>
+				<td> ${aux.correo} </td>
+				<td> ${aux.telefono} </td>
+				</tr>`
+		})
+		texto = texto + '</tbody></table>';
+		return texto;
+	} catch (error) {
+		console.log("catch");
+		return "Error";
+	}
+}
+
+const cursosDocente = (cedula, listado) => {
+	try {			
+		console.log(listado);
+		console.log(cedula);
+			let texto = "<table class='table table-striped table-bordered'> \
+						<thead> \
+						<th> Id </th> \
+						<th> Nombre Curso </th> \
+						<th> Modalidad </th> \
+						<th> Valor </th> \
+						<th> Descripción </th> \
+						<th> Intensidad horaria </th> \
+						</thead> \
+						<tbody>";
+				listado.forEach(curso => {
+					texto = texto +
+						'<tr>' +
+						'<td>' + curso.id + '</td>' +
+						'<td>' + curso.nombre + '</td>' +
+						'<td>' + curso.modalidad + '</td>' +
+						'<td>' + curso.valor + '</td>' +
+						'<td>' + curso.descripcion + '</td>' +
+						'<td>' + curso.intensidad + '</td>'
+				
+			})			
+			texto = texto + '</tbody></table>';		
+			return texto;
+	} catch (error) {
+		console.log(error);
+		return "Error";
+	}
+}
+
+
 module.exports = {
 	registrarUsuario,
 	intentoRegistro,
@@ -618,5 +681,7 @@ module.exports = {
 	mensajeVerInscritosEliminar,
 	guardarDocumentoGlobal,
 	borrarDocumentoGlobal,
-	EliminarInscripcionAspirante
+	EliminarInscripcionAspirante,
+	mostrarDocentes,
+	cursosDocente
 }
