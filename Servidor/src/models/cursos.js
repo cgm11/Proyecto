@@ -28,8 +28,11 @@ const cursoSchema = Schema({
     },
     estado: {
         type: String
-    }
-
+	},
+	docente: {
+		type: String,
+		default: ""
+	}
 });
 const Cursos = mongoose.model('Cursos',cursoSchema);
 
