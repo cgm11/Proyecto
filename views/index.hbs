@@ -1,0 +1,26 @@
+<div class="container">
+    {{>header}}
+    <br>
+    <h3>
+        Bienvenidos a la página de matriculas
+    </h3>
+    {{mensajeUsuario}}
+    <form action="/ingreso" method="post">
+        
+        <div class="form-group">
+            <br><label>Usuario</label>
+            <input type="text" class="form-control" name="nombreUser" required>
+        </div>
+        <div class="form-group">
+            <br><label>Contraseña</label>
+            <input type="password" class="form-control" placeholder="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <br><button>Ingresar</button>
+        </div>
+    </form>
+
+    <form action="/registro" method="post">
+        <button>Registrarse</button>
+    </form>
+</div>

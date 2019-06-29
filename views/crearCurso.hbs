@@ -1,0 +1,49 @@
+<div class="container">
+{{>header}} 
+{{>navCoordinador}}
+
+{{mostrar}}
+
+<form action="/mostrarCursos" method="POST">
+    <br>
+    <div class="row">
+        <div class="col">
+            <label>Id</label>
+            <input type="number" class="form-control" placeholder="Id del curso" name="idcurso" required> 
+        </div>
+        <div class="col">
+            <label>Nombre</label>
+            <input type="text" class="form-control" placeholder="Nombre del curso" name="nombre" required>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col">
+            <label>Modalidad</label>
+            <select class="form-control" name="modalidad">
+                <option>-</option>
+                <option>Virtual</option>
+                <option>Presencial</option>
+            </select>
+        </div>
+        <div class="col">
+            <label>Valor</label>
+            <input type="number" class="form-control" placeholder="Valor" name="valor" required>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col">
+            <label>Descripción</label>
+            <textarea class="form-control" rows="3" name="descripcion" required></textarea>
+        </div>
+        <div class="col">
+            <label>Intensidad horaria</label>
+            <input type="number" class="form-control" placeholder="intensidad" name="intensidad">
+        </div>
+    </div>
+    <div class="form-group">
+        <br><button>Crear curso</button>
+    </div> 
+</form>
+</div>

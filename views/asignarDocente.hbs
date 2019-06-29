@@ -1,0 +1,31 @@
+<div class="container">
+{{>header}}
+{{>navCoordinador}}
+<br>
+<h3>{{mostrar}} {{id}}</h3>
+
+{{{mostrarDocentes listado id}}}
+
+<h4>
+    Asignar docente
+</h4>
+<form action="/asignarDocente" method="POST">
+    <div class="row">
+        <div class="col">
+            <label>Id curso</label>
+            <output type="number" class="form-control" name="id2">{{id}}</output> 
+        </div>  
+        <div class="col">
+            <label>Documento</label>
+            <input type="number" class="form-control" placeholder="documento" name="documento" required> 
+        </div>        
+    </div>
+    <div class="row">
+    	<div class="col">
+    		<label>     </label>
+        	<div class="form-group">
+        	<br><button name="id" value="{{id}}">Asignar</button>
+        </div>
+    </div> 
+</form>
+</div>
