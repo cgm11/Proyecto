@@ -127,3 +127,10 @@ a:hover{
   position: relative;
   right: -195px;
 }
+
+.registro{
+  width: 40%;
+  position: relative;
+  text-align: center;
+  right: -31%;
+}

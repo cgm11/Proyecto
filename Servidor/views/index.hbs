@@ -7,14 +7,14 @@
         </h3>
         {{mensajeUsuario}}
         <form action="/ingreso" method="post">
-            <div class="form-group">
-                <br><label>Correo</label>
-                <input type="email" class="form-control" placeholder="user@correo.com" name="correo" required>
-            </div>
-            <div class="form-group">
-                <br><label>Documento de identidad</label>
-                <input type="number" class="form-control" name="documento" required>
-            </div>
+              <div class="form-group">
+            <br><label>Usuario</label>
+            <input type="text" class="form-control" name="nombreUser" required>
+        </div>
+        <div class="form-group">
+            <br><label>Contraseña</label>
+            <input type="password" class="form-control" placeholder="password" name="password" required>
+        </div>
             <div class="form-group">
                 <br><button class="btn btn-success">Ingresar</button>
             </div>
