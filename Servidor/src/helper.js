@@ -112,8 +112,15 @@ hbs.registerHelper('CrearTableVerInscritos',(listaInscritos, mensajeVerInscritos
     return resultado;
 })
 
-hbs.registerHelper('cursosDocente',(documento, listado) => {
-    let resultado =  funciones.cursosDocente(documento, listado);
+hbs.registerHelper('cursosDocente',(listado) => {
+    let resultado =  funciones.cursosDocente(listado);
     return resultado;
 })
+
+hbs.registerHelper('mostrarInscritosDocente',(listaIncritos) => {
+    let resultado =  funciones.mostrarInscritosDocente(listaIncritos);
+    return resultado;
+})
+
+ 
 
