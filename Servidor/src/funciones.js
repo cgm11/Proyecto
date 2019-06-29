@@ -1,8 +1,12 @@
 listaUsuarios = [];
+listaUsuariosMongo = [];
 listaCursos = [];
 listarMatricula = [];
 const fs = require('fs');
 let cedulaGlobal = "";
+const Usuario = require('./models/usuario');
+const Curso = require('./models/cursos');
+const Inscrito = require('./models/inscritos');
 
 let intentoRegistro = (correo, cedula, nombre, telefono, rol, callback) => {
 	let resultado1 = "";
@@ -11,6 +15,16 @@ let intentoRegistro = (correo, cedula, nombre, telefono, rol, callback) => {
 		resultado1 = resultado2;
 	})
 	console.log("el resultado1 antes de return es: " + resultado1);
+	callback(resultado1);
+}
+
+let intentoRegistroMongo = (correo, cedula, nombre, telefono, rol, callback) => {
+	let resultado1 = "";
+	registrarUsuarioMongo(correo, cedula, nombre, telefono, rol, function (resultado2) {
+		console.log("el resultado otro mongo es: " + resultado2);
+		resultado1 = resultado2;
+	})
+	console.log("el resultado1 antes de return mongo es: " + resultado1);
 	callback(resultado1);
 }
 
@@ -37,6 +51,31 @@ const registrarUsuario = (correo, cedula, nombre, telefono, rol, callback) => {
 	console.log('valor de resultado2: ' + resultado2);
 	callback(resultado2);
 }
+
+const registrarUsuarioMongo = (correo, cedula, nombre, telefono, rol, callback) => {
+	//listar();
+
+	//let resultado = "";
+	let resultado2 = "Ingreso Exitoso";
+	let usuario = new Usuario ({
+		nombre: nombre,
+		cedula: cedula,
+		correo: correo,
+		telefono: telefono,
+		rol: "aspirante"
+	})
+
+	usuario.save( (err, resultado) => {
+		if(err){
+			resultado2 = "ERROR EN GUARDADO DE MONGO";
+		}
+		resultado2 = ("Ingreso exitoso: "+resultado);
+		console.log('el valor de resultado en mongo es: '+ resultado +', error: '+ err)
+	})
+	console.log('el valor de resultado2 en mongo es: '+ resultado2)
+	callback(resultado2);
+}
+
 
 const buscarDuplicado = (data) => {
 	listar();
@@ -143,32 +182,31 @@ const listarOtro = () => {
 
 }
 
-const crearTablaCursos = () => {
+const crearTablaCursos = (listar) => {
 	try {
 		console.log("Entro");
-		listarOtro();
 		console.log("Paso listar");
-		let texto = "<table class='table table-striped table-bordered'> \
-					<thead> \
-					<th> Id </th> \
-					<th> Nombre </th> \
-					<th> Modalidad </th> \
-					<th> Valor </th> \
-					<th> Descripción </th> \
-					<th> Intensidad horaria </th> \
-					<th> Estado </th> \
-					</thead> \
-					<tbody>";
-		listaCursos.forEach(cur => {
+		let texto = `<table class='table table-striped table-bordered'> 
+					<thead> 
+					<th> Id </th> 
+					<th> Nombre </th> 
+					<th> Modalidad </th> 
+					<th> Valor </th> 
+					<th> Descripción </th> 
+					<th> Intensidad horaria </th> 
+					<th> Estado </th> 
+					</thead> 
+					<tbody>`;
+			listar.forEach(curso => {
 			texto = texto +
-				'<tr>' +
-				'<td>' + cur.id + '</td>' +
-				'<td>' + cur.nombre + '</td>' +
-				'<td>' + cur.modalidad + '</td>' +
-				'<td>' + cur.valor + '</td>' +
-				'<td>' + cur.descripcion + '</td>' +
-				'<td>' + cur.intensidad + '</td>' +
-				'<td>' + cur.estado + '</td></tr>'
+				`<tr>
+				<td> ${curso.idcurso} </td>
+				<td> ${curso.nombre} </td>
+				<td> ${curso.modalidad} </td>
+				<td> ${curso.valor} </td>
+				<td> ${curso.descripcion} </td>
+				<td> ${curso.intensidad} </td>
+				<td> ${curso.estado} </td></tr>`
 		})
 		texto = texto + '</tbody></table>';
 		return texto;
@@ -178,13 +216,14 @@ const crearTablaCursos = () => {
 	}
 }
 
-const crearTablaCursosDisponibles = () => {
+const crearTablaCursosDisponibles = (cursosDisponibles) => {
 	try {
 		console.log("Entro a crearTablaCursosDisponibles");
-		listarOtro();
+		//listarOtro();
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
 		//console.log('valor de id: '+existe.id)})
+		console.log("valor de cursosDisponibles: "+cursosDisponibles)
 		let texto = "<table class='table table-striped table-bordered'> \
 					<thead> \
 					<th> Id </th> \
@@ -196,11 +235,11 @@ const crearTablaCursosDisponibles = () => {
 					<th> Estado </th> \
 					</thead> \
 					<tbody>";
-		listaCursos.forEach(cur => {
+		cursosDisponibles.forEach(cur => {
 			if (cur.estado == 'Disponible') {
 				texto = texto +
 					'<tr>' +
-					'<td>' + cur.id + '</td>' +
+					'<td>' + cur.idcurso + '</td>' +
 					'<td>' + cur.nombre + '</td>' +
 					'<td>' + cur.modalidad + '</td>' +
 					'<td>' + cur.valor + '</td>' +
@@ -217,55 +256,64 @@ const crearTablaCursosDisponibles = () => {
 	}
 }
 
-const VerInscritos = (idCurso) => {
+const VerInscritos = (listaInscritos, idCurso) => {
 	try {
+		if(listaInscritos.length>0){
+		let contador = 0;
 		console.log("Entro a VerInscritos");
-		listarMatriculas();
+		console.log("valor de listaInscritos: "+listaInscritos)
+		//listarMatriculas();
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
 		console.log('valor de id: ' + idCurso);
 		let texto = '<table class="table table-striped table-bordered"> \
-	<thead> \
-	<th> Id Curso </th> \
-	<th> Cedula </th> \
-	</thead> \
-	<tbody>';
-		listarMatricula.forEach(cur => {
-			console.log('valor de cur.id: ' + cur.id + ' y idCurso: ' + idCurso)
-			if (cur.id == idCurso) {
+		<thead> \
+		<th> Id Curso </th> \
+		<th> Nombre Curso </th> \
+		<th> Cedula Aspirante</th> \
+		<th> Nombre Aspirante </th> \
+		</thead> \
+		<tbody>';
+		listaInscritos.forEach(cur => {
+			console.log('valor de cur.id: ' + cur.idCurso + ' y idCurso: ' + idCurso)
+			if (cur.idCurso == idCurso) {
+				contador = contador + 1;
 				texto = texto +
 					'<tr>' +
-					'<td>' + cur.id + '</td>' +
-					'<td>' + cur.cedula + '</td></tr>'
+					'<td>' + cur.idCurso + '</td>' +
+					'<td>' + cur.nombreCurso + '</td>' +
+					'<td>' + cur.cedula + '</td>' +
+					'<td>' + cur.nombre + '</td></tr>'
 			}
-		})
-		texto = texto + '</tbody></table>';
+		})//<h4>   Bienvenidos a la pagina de mostrar cursos disponibles e inscritos</h4>
+		if(contador==0){texto = '<h3><p><b>No hay aspirantes en este curso</b></p></h3'}else{
+		texto = texto + '</tbody></table>';}
 		return texto;
+	}else{return "";}
 	} catch (error) {
 		console.log("catch, Error: " + error);
 		return "Error";
 	}
 }
 
-const mostrarCursosAspirante = () => {
+const mostrarCursosAspirante = (listar) => {
 	try {
-		listarOtro();
 		let texto = "";
-		listaCursos.forEach(cur => {
+		listar.forEach(cur => {
 			if (cur.estado == 'Disponible') {
 				texto = texto +
 					'<div class="accordion" id="accordionExample"> \
 				<div class="card"> \
-						<div class="card-header" id="heading' + cur.id + '">  \
+						<div class="card-header" id="heading' + cur.idcurso + '">  \
 							<h2 class="mb-0"> \
-							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.id + '" aria-expanded="false" aria-controls="collapse' + cur.id + '">' +
+							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + cur.idcurso + '" aria-expanded="false" aria-controls="collapse' + cur.idcurso + '">' +
 					'Nombre: ' + cur.nombre + '<br>Valor: ' + cur.valor + '<br>Descripción: ' + cur.descripcion +
 					'</button> \
 							</h2> \
 						</div> \
-						<div id="collapse' + cur.id + '" class="collapse" aria-labelledby="heading' + cur.id + '" data-parent="#accordionExample"> \
+						<div id="collapse' + cur.idcurso + '" class="collapse" aria-labelledby="heading' + cur.idcurso + '" data-parent="#accordionExample"> \
 							<div class="card-body">' +
-					'Id curso: ' + cur.id + '<br>Descripción :' + cur.descripcion + '<br>Modalidad: ' + cur.modalidad + '<br>Valor: ' + cur.valor +
+					'Id curso: ' + cur.idcurso + '<br>Descripción :' + cur.descripcion + '<br>Modalidad: ' + cur.modalidad + '<br>Intensidad horaria: ' + cur.intensidad +
 					'</div> \
 						</div> \
 				</div> \
@@ -285,6 +333,12 @@ const mostrarUsuarios = () => {
 		console.log("Entro a mostrarUsuarios");
 		listar();
 		console.log("Paso listar");
+		Usuario.find({}).exec((err,respuesta)=> {
+			if(err){
+				return console.log(err)
+			}
+			listaUsuariosMongo=respuesta
+		})
 		let texto = "<table class='table table-striped table-bordered'> \
 					<thead> \
 					<th> Cedula </th> \
@@ -458,57 +512,23 @@ const editarCurso = (idCurso, estadoNew) => {
 	}
 }
 
-const mostrarMisCursos = () => {
-	console.log("CEDULA GLOBAL: " + cedulaGlobal);
-	let result = '';
-	let aux = '';
+const mostrarMisCursos = (listadoMisCursos) => {	
 	try {
-		if (cedulaGlobal == null || cedulaGlobal == 'undefined' || isNaN(cedulaGlobal)) {
-			console.log("No existe cedulaMisCursos no entra a función mostrarMisCursos");
-			result = "Documento no valido";
-		} else {
-			console.log("Entro mostrarMisCursos función");
-			listarMatriculas();
-			listar();
-			listarOtro();
-			console.log("Paso listar");
 			let texto = "<table class='table table-striped table-bordered'> \
 						<thead> \
 						<th> Id </th> \
 						<th> Nombre Curso </th> \
-						<th> Modalidad </th> \
-						<th> Valor </th> \
-						<th> Descripción </th> \
-						<th> Intensidad horaria </th> \
 						</thead> \
 						<tbody>";
-			listarMatricula.forEach(cur => {
-				console.log("Entro a forEach, valor id: " + cur.id + "Valor cedula: " + cur.cedula);
-				if (listaUsuarios.find(nom => cur.cedula == cedulaGlobal)) {
-					//console.log("PRUEBA: " + listaUsuarios.find(nom => cur.cedula == cedulaGlobal));
-					aux = 'existe';
-					console.log("Entro a If cedula: " + cedulaGlobal);
-					let curso = listaCursos.find(aux => aux.id == cur.id);
+				listadoMisCursos.forEach(curso => {
 					texto = texto +
 						'<tr>' +
-						'<td>' + curso.id + '</td>' +
-						'<td>' + curso.nombre + '</td>' +
-						'<td>' + curso.modalidad + '</td>' +
-						'<td>' + curso.valor + '</td>' +
-						'<td>' + curso.descripcion + '</td>' +
-						'<td>' + curso.intensidad + '</td>'
-				} else {
-					console.log("se salto if");
-				}
+						'<td>' + curso.idCurso + '</td>' +
+						'<td>' + curso.nombreCurso + '</td>'				
 			})
-			listarMatricula = [];
-			texto = texto + '</tbody></table>';
-			if (aux == '') {
-				return '<b>No tiene ningún curso asociado</b><br><br>';
-			} else {
+			texto = texto + '</tbody></table>';			
 				return texto;
-			}
-		}
+			
 	} catch (error) {
 		console.log(error);
 		return "Error";
@@ -552,9 +572,107 @@ const EliminarInscripcionAspirante = (idCurso) => {
 }
 
 
+const mostrarDocentes = (listar, id) => {
+	try {
+		let texto = `<table class='table table-striped table-hover'> 
+					<thead class='thead-dark'> 
+					<th> Id </th> 
+					<th> Nombre </th> 
+					<th> Documento </th> 
+					<th> Correo </th>
+					<th> Telefono </th>
+					<th></th> 
+					</thead> 
+					<tbody>`;
+			listar.forEach(aux => {
+			texto = texto +
+				`<tr>
+				<td> ${id} </td>
+				<td name="nombre" value="${aux.nombre}"> ${aux.nombre} </td>
+				<td> ${aux.cedula} </td>
+				<td> ${aux.correo} </td>
+				<td> ${aux.telefono} </td>
+				</tr>`
+		})
+		texto = texto + '</tbody></table>';
+		return texto;
+	} catch (error) {
+		console.log("catch");
+		return "Error";
+	}
+}
+
+const cursosDocente = (listado) => {
+	try {	
+			let texto = "<table class='table table-striped table-bordered'> \
+						<thead> \
+						<th> Id </th> \
+						<th> Nombre Curso </th> \
+						<th> Modalidad </th> \
+						<th> Valor </th> \
+						<th> Descripción </th> \
+						<th> Intensidad horaria </th> \
+						</thead> \
+						<tbody>";
+				listado.forEach(curso => {
+					texto = texto +
+						'<tr>' +
+						'<td>' + curso.idcurso + '</td>' +
+						'<td>' + curso.nombre + '</td>' +
+						'<td>' + curso.modalidad + '</td>' +
+						'<td>' + curso.valor + '</td>' +
+						'<td>' + curso.descripcion + '</td>' +
+						'<td>' + curso.intensidad + '</td>'
+				
+			})			
+			texto = texto + '</tbody></table>';		
+			return texto;
+	} catch (error) {
+		console.log(error);
+		return "Error";
+	}
+}
+
+
+const mostrarInscritosDocente = (listado) => {
+	try {			
+		console.log(listado);	
+		if(listado.length == 0)	{
+			return "";
+		}else{
+			let texto = "<table class='table table-striped table-bordered'> \
+						<thead> \
+						<th> Id </th> \
+						<th> Nombre </th> \
+						<th> Cedula </th> \
+						<th> Telefono </th> \
+						<th> Correo </th> \
+						</thead> \
+						<tbody>";
+				listado.forEach(curso => {
+					texto = texto +
+						'<tr>' +
+						'<td>' + curso.idCurso + '</td>' +
+						'<td>' + curso.nombre + '</td>' +
+						'<td>' + curso.cedula + '</td>' +
+						'<td>' + curso.telefono + '</td>' +
+						'<td>' + curso.correo + '</td>'
+				
+			})			
+			texto = texto + '</tbody></table>';		
+			return texto;
+		}
+	} catch (error) {
+		console.log(error);
+		return "Error";
+	}
+}
+
+
 module.exports = {
 	registrarUsuario,
 	intentoRegistro,
+	intentoRegistroMongo,
 	guardar,
 	crearCursos,
 	guardarCurso,
@@ -575,5 +693,8 @@ module.exports = {
 	mensajeVerInscritosEliminar,
 	guardarDocumentoGlobal,
 	borrarDocumentoGlobal,
-	EliminarInscripcionAspirante
+	EliminarInscripcionAspirante,
+	mostrarDocentes,
+	cursosDocente, 
+	mostrarInscritosDocente
 }
