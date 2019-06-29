@@ -4,6 +4,7 @@
   "description": "proyecto",
   "main": "app.js",
   "scripts": {
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Los Carola caro.garcia0506@gmail.com",
