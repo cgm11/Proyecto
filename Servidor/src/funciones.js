@@ -602,10 +602,8 @@ const mostrarDocentes = (listar, id) => {
 	}
 }
 
-const cursosDocente = (cedula, listado) => {
-	try {			
-		console.log(listado);
-		console.log(cedula);
+const cursosDocente = (listado) => {
+	try {	
 			let texto = "<table class='table table-striped table-bordered'> \
 						<thead> \
 						<th> Id </th> \
@@ -629,6 +627,41 @@ const cursosDocente = (cedula, listado) => {
 			})			
 			texto = texto + '</tbody></table>';		
 			return texto;
+	} catch (error) {
+		console.log(error);
+		return "Error";
+	}
+}
+
+
+const mostrarInscritosDocente = (listado) => {
+	try {			
+		console.log(listado);	
+		if(listado.length == 0)	{
+			return "";
+		}else{
+			let texto = "<table class='table table-striped table-bordered'> \
+						<thead> \
+						<th> Id </th> \
+						<th> Nombre </th> \
+						<th> Cedula </th> \
+						<th> Telefono </th> \
+						<th> Correo </th> \
+						</thead> \
+						<tbody>";
+				listado.forEach(curso => {
+					texto = texto +
+						'<tr>' +
+						'<td>' + curso.idCurso + '</td>' +
+						'<td>' + curso.nombre + '</td>' +
+						'<td>' + curso.cedula + '</td>' +
+						'<td>' + curso.telefono + '</td>' +
+						'<td>' + curso.correo + '</td>'
+				
+			})			
+			texto = texto + '</tbody></table>';		
+			return texto;
+		}
 	} catch (error) {
 		console.log(error);
 		return "Error";
@@ -662,5 +695,6 @@ module.exports = {
 	borrarDocumentoGlobal,
 	EliminarInscripcionAspirante,
 	mostrarDocentes,
-	cursosDocente
+	cursosDocente, 
+	mostrarInscritosDocente
 }

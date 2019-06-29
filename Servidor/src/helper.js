@@ -29,13 +29,6 @@ return resultado;
 
 });
 
-/*********** Validar si ya no lo necesito Caro
-hbs.registerHelper('crearCursos',(id, nombre, modalidad, valor, descripcion, intensidad, estado)=>{    
-    var resultado = "";
-    resultado = funciones.crearCursos(id, nombre, modalidad, valor, descripcion, intensidad, estado);
-    return resultado;
-})*/
-
 hbs.registerHelper('crearTablaCursos',(listado) => {
     let resultado =  funciones.crearTablaCursos(listado);
     return resultado;
@@ -79,7 +72,9 @@ let texto = `
                 <td> ${estudiante.rol} </td>
                 
                 </tr> `;
-    })}
+    })}else{
+        console.log('No Entro')
+    }
     texto = texto + '</tbody> </table></form>'; 
     return texto;
 
@@ -112,8 +107,15 @@ hbs.registerHelper('CrearTableVerInscritos',(listaInscritos, mensajeVerInscritos
     return resultado;
 })
 
-hbs.registerHelper('cursosDocente',(documento, listado) => {
-    let resultado =  funciones.cursosDocente(documento, listado);
+hbs.registerHelper('cursosDocente',(listado) => {
+    let resultado =  funciones.cursosDocente(listado);
     return resultado;
 })
+
+hbs.registerHelper('mostrarInscritosDocente',(listaIncritos) => {
+    let resultado =  funciones.mostrarInscritosDocente(listaIncritos);
+    return resultado;
+})
+
+ 
 
