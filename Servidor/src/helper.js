@@ -44,8 +44,8 @@ hbs.registerHelper('mostrarCursosAspirante',(listado) => {
     return resultado;
 })
 
-hbs.registerHelper('listarUsuarios',() => {
-    let resultado =  funciones.mostrarUsuarios();
+hbs.registerHelper('listarUsuarios',(listado) => {
+    let resultado =  funciones.mostrarUsuarios(listado);
     return resultado;
 })
 

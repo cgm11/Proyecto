@@ -652,25 +652,8 @@ app.post('/aspirante', (req, res) => {
                                 })
                             })
                         })
-        ///
-    /*res.render('aspirante', {
-        id: parseInt(req.body.id),
-        idEliminar: parseInt(req.body.idEliminar),
-        mensajeVerInscritosEliminar: mensajeVerInscritosEliminar,
-        mensajeMatricular : mensajeMatricular
-    })*/}
+    }
 });
-
-
-/*app.get('/aspirante', (req, res) => {
-    //console.log('Entro a get');
-    res.render('aspirante', {
-        correo: req.body.correo,
-        cedula: parseInt(req.body.documento),
-        nombre: req.body.nombre,
-        telefono: req.body.telefono
-    })
-});*/
 
 app.post('/editarUsuario', (req, res) => {
     let mensajeEditarUsuario = '';
@@ -706,23 +689,46 @@ app.post('/editarUsuario', (req, res) => {
             //console.log('valores de existe, rol ' + existe.rol);
             arregloUpdate[rol] = req.body.rol;
         }
-        //let arregloUpdate = {};
-        let update = 'Update6';
-        let nombreU = 'nombre';
-        //arregloUpdate[nombreU] = update;
-        //let estudianteNota = arregloUpdate.find(function(notaEst ) {
-        //return notaEst.id == 12345});
         Usuario.findOneAndUpdate({cedula : parseInt(req.body.cedula)}, {$set:arregloUpdate}, {new : true, runValidators: true, context: 'query'}, (err, resultados) => {
             //  findOneAndUpdate({nombre :           req.body.nombre}, req.body,             {new : true, runValidators: true, context: 'query' }, (err, resultados) => {
-        if (err){
+        if (err){console.log('error al eliminar inscrito');
+        ///
+            Usuario.find({}).exec((err, resultado) => {
+            if (err) {
             return console.log(err)
+            }
+            res.render('editarUsuario', {
+            listado: resultado,
+            mensajeEditarUsuario: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
+            })
+            })
+        } else if (!resultados){
+            Usuario.find({}).exec((err, resultado) => {
+            if (err) {
+            return console.log(err)
+            }
+            res.render('editarUsuario', {
+            listado: resultado,
+            mensajeEditarUsuario: "No hay registros para actualizar"
+            })
+            })
+        } else {
+            Usuario.find({}).exec((err, resultado) => {
+            if (err) {
+            return console.log(err)
+            }
+            res.render('editarUsuario', {
+            listado: resultado,
+            mensajeEditarUsuario: "Actualizacion exitosa de: "+loginData.cedula
+            })
+            })                    
         }
-        
+
     })  
 
         //mensajeEditarUsuario = funciones.actualizarUsuario(loginData.cedula, loginData.nombre, loginData.correo, loginData.telefono, loginData.rol);
     }
-    ///
+   /* ///
     Usuario.find({}, (err, respuesta) => {
         if (err) {
             //res.render('editarUsuario', {
@@ -737,7 +743,7 @@ app.post('/editarUsuario', (req, res) => {
         })
     })
     ///
-
+*/
 });
 app.get('/editarUsuario', (req, res) => {
     Usuario.find({}, (err, respuesta) => {

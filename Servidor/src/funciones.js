@@ -328,17 +328,17 @@ const mostrarCursosAspirante = (listar) => {
 	}
 }
 
-const mostrarUsuarios = () => {
+const mostrarUsuarios = (listado) => {
 	try {
-		console.log("Entro a mostrarUsuarios");
-		listar();
+		console.log("Entro a mostrarUsuarios viejo");
+		//listar();
 		console.log("Paso listar");
-		Usuario.find({}).exec((err,respuesta)=> {
-			if(err){
-				return console.log(err)
-			}
-			listaUsuariosMongo=respuesta
-		})
+		//Usuario.find({}).exec((err,respuesta)=> {
+		//	if(err){
+		//		return console.log(err)
+		//	}
+		//	listaUsuariosMongo=respuesta
+		//})
 		let texto = "<table class='table table-striped table-bordered'> \
 					<thead> \
 					<th> Cedula </th> \
@@ -348,7 +348,7 @@ const mostrarUsuarios = () => {
 					<th> Rol </th> \
 					</thead> \
 					<tbody>";
-		listaUsuarios.forEach(user => {
+		listado.forEach(user => {
 			texto = texto +
 				'<tr>' +
 				'<td>' + user.cedula + '</td>' +
