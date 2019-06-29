@@ -187,34 +187,116 @@ app.post('/listaCursos', (req, res) => {
 });
 
 app.get('/verInscritos', (req, res) => {
-    res.render('verInscritos')
+    let listaCursos = [];
+    console.log('entre a get de verInscritos');
+    Curso.find({}).exec((err, resultado) => {
+        if (err) {
+            return console.log(err)
+        }
+        res.render('verInscritos', {
+            cursosDisponibles: resultado,
+            listaInscritos: listaCursos
+        })
+    })
+    //res.render('verInscritos')
 })
 
 app.post('/verInscritos', (req, res) => {
+    let listaCursos = [];
     let mensajeVerInscritos = '';
+    let cursosDisponibles = '';
     let mensajeVerInscritosEliminar = '';
     let loginData = {
         idCurso: parseInt(req.body.idCurso),
         cedula: parseInt(req.body.cedulaUsuario),
-        idCursoVer: parseInt(req.body.idCursoVer)
+        idCursoVer: parseInt(req.body.idCursoVer),
+        listaInscritos:{}
     }
     console.log('idCursoVer: ' + loginData.idCursoVer + ', cedula: ' + loginData.cedula + ' y idCurso: ' + loginData.idCurso);
     if (!isNaN(loginData.cedula) && (!isNaN(loginData.idCurso))) {
         console.log("Entre a mensajeVerInscritosEliminar ");
-        mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso, loginData.cedula);
-        console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
-        console.log("Entre a mensajeVerInscritos curso");
-        mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
-    } else {
-        if (!isNaN(loginData.idCurso)) {
-            console.log("Entre a mensajeVerInscritos curso");
-            mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
+        ///
+        let cedulaBuscada = loginData.cedula;
+        let idCursoBuscado = loginData.idCurso;
+        Inscrito.findOneAndDelete({cedula : cedulaBuscada, idCurso :idCursoBuscado}, (err, resultados) => {
+        if (err){
+            console.log('error al eliminar inscrito');
+            Curso.find({}).exec((err, resultado) => {
+            if (err) {
+            return console.log(err)
+            }
+            res.render('verInscritos', {
+            cursosDisponibles: resultado,
+            mensajeVerInscritosEliminar:mensajeVerInscritosEliminar,
+            listaInscritos: listaCursos
+            })
+            })
         }
+        if(!resultados){
+            console.log('No hay resultados para eliminar');
+            Curso.find({}).exec((err, resultado) => {
+            if (err) {
+            return console.log(err)
+            }
+            res.render('verInscritos', {
+            cursosDisponibles: resultado,
+            mensajeVerInscritosEliminar: 'No hay resultados para eliminar',
+            listaInscritos: listaCursos
+            })
+            })
+        }
+            console.log('Eliminado exitosamente');
+            Curso.find({}).exec((err, resultado) => {
+            if (err) {
+            return console.log(err)
+            }
+            Inscrito.find({}).exec((err, resultadito) => {
+            if (err) {
+            return console.log(err)
+            }
+            res.render('verInscritos', {
+            cursosDisponibles: resultado,
+            mensajeVerInscritosEliminar: 'Eliminado exitosamente',
+            mensajeVerInscritos: loginData.idCurso,
+            listaInscritos: resultadito})
+            })
+            })
+        })  
+        ///
+        //mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso, loginData.cedula);
+        //console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
+        //console.log("Entre a mensajeVerInscritos curso");
+        //mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
+    } else if (!isNaN(loginData.idCursoVer)) {
+            console.log("Entre a mensajeVerInscritos curso");
+            Curso.find({}).exec((err, resultado) => {
+            if (err) {
+            return console.log(err)
+            }
+            Inscrito.find({}).exec((err, resultadito) => {
+            if (err) {
+            return console.log(err)
+            }
+            res.render('verInscritos', {
+            cursosDisponibles: resultado,
+            mensajeVerInscritos: loginData.idCursoVer,
+            listaInscritos: resultadito})
+            })
+            })
+            //mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
+        }
+    else{
+        Curso.find({}).exec((err, resultado) => {
+            if (err) {
+            return console.log(err)
+            }
+            res.render('verInscritos', {
+            cursosDisponibles: resultado,
+            mensajeVerInscritos: loginData.idCurso,
+            listaInscritos:''
+            })
+            })
     }
-    res.render('verInscritos', {
-        mensajeVerInscritos: mensajeVerInscritos,
-        mensajeVerInscritosEliminar: mensajeVerInscritosEliminar
-    })
 })
 
 app.post('/mostrarCursos', (req, res) => {
@@ -487,29 +569,92 @@ app.post('/aspirante', (req, res) => {
         let idCursoBuscado = parseInt(req.body.idEliminar);
             Inscrito.findOneAndDelete({cedula : cedulaBuscada, idCurso :idCursoBuscado}, (err, resultados) => {
         if (err){console.log('error al eliminar inscrito');
-                                return res.render('aspirante', {                    
-                                mensajeVerInscritosEliminar: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
+        ///
+            Curso.find({}).exec((err, resultado) => {
+                            if (err) {
+                                return console.log(err)
+                            }
+                            Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
+                                if (err) {
+                                    return console.log(err)
+                                }
+                                res.render('aspirante', {
+                                    listado: resultado,
+                                    documento: req.session.cedula,
+                                    listadoMisCursos: aux,
+                                    mensajeVerInscritosEliminar: "Se presentaron incovenientes en el proceso por favor vuelva a intentar"
                                 })
+                            })
+                        })
+        ///
         }
         if(!resultados){
             console.log('No hay resultados para eliminar');
-            return res.render('aspirante', {                    
-                    mensajeVerInscritosEliminar: "No hay resultados para eliminar"
-                })
+            ///
+            Curso.find({}).exec((err, resultado) => {
+                            if (err) {
+                                return console.log(err)
+                            }
+                            Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
+                                if (err) {
+                                    return console.log(err)
+                                }
+                                res.render('aspirante', {
+                                    listado: resultado,
+                                    documento: req.session.cedula,
+                                    listadoMisCursos: aux,
+                                    mensajeVerInscritosEliminar: "No hay resultados para eliminar"
+                                })
+                            })
+                        })
+        ///
         }
             console.log('Eliminado exitosamente');
-            return res.render('aspirante', {                    
-                    mensajeVerInscritosEliminar: "Curso "+ idCursoBuscado +"Eliminado exitosamente"
-                })
+            ///
+            Curso.find({}).exec((err, resultado) => {
+                            if (err) {
+                                return console.log(err)
+                            }
+                            Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
+                                if (err) {
+                                    return console.log(err)
+                                }
+                                res.render('aspirante', {
+                                    listado: resultado,
+                                    documento: req.session.cedula,
+                                    listadoMisCursos: aux,
+                                    mensajeVerInscritosEliminar: "Eliminado exitosamente"
+                                })
+                            })
+                        })
+        ///
+           
     })  
         ///
-    }
+    }else{
+        ///
+            Curso.find({}).exec((err, resultado) => {
+                            if (err) {
+                                return console.log(err)
+                            }
+                            Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
+                                if (err) {
+                                    return console.log(err)
+                                }
+                                res.render('aspirante', {
+                                    listado: resultado,
+                                    documento: req.session.cedula,
+                                    listadoMisCursos: aux,
+                                })
+                            })
+                        })
+        ///
     /*res.render('aspirante', {
         id: parseInt(req.body.id),
         idEliminar: parseInt(req.body.idEliminar),
         mensajeVerInscritosEliminar: mensajeVerInscritosEliminar,
         mensajeMatricular : mensajeMatricular
-    })*/
+    })*/}
 });
 
 

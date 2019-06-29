@@ -41,8 +41,8 @@ hbs.registerHelper('crearTablaCursos',(listado) => {
     return resultado;
 })
 
-hbs.registerHelper('crearTablaCursosDisponibles',() => {
-    let resultado =  funciones.crearTablaCursosDisponibles();
+hbs.registerHelper('crearTablaCursosDisponibles',(cursosDisponibles) => {
+    let resultado =  funciones.crearTablaCursosDisponibles(cursosDisponibles);
     return resultado;
 })
 
@@ -104,6 +104,11 @@ hbs.registerHelper('misCursos',(listadoMisCursos)=>{
 
 hbs.registerHelper('mostrarDocentes',(listado, id) => {
     let resultado =  funciones.mostrarDocentes(listado, id);
+    return resultado;
+})
+
+hbs.registerHelper('CrearTableVerInscritos',(listaInscritos, mensajeVerInscritos) => {
+    let resultado =  funciones.VerInscritos(listaInscritos, mensajeVerInscritos);
     return resultado;
 })
 

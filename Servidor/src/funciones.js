@@ -5,6 +5,8 @@ listarMatricula = [];
 const fs = require('fs');
 let cedulaGlobal = "";
 const Usuario = require('./models/usuario');
+const Curso = require('./models/cursos');
+const Inscrito = require('./models/inscritos');
 
 let intentoRegistro = (correo, cedula, nombre, telefono, rol, callback) => {
 	let resultado1 = "";
@@ -214,13 +216,14 @@ const crearTablaCursos = (listar) => {
 	}
 }
 
-const crearTablaCursosDisponibles = () => {
+const crearTablaCursosDisponibles = (cursosDisponibles) => {
 	try {
 		console.log("Entro a crearTablaCursosDisponibles");
-		listarOtro();
+		//listarOtro();
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
 		//console.log('valor de id: '+existe.id)})
+		console.log("valor de cursosDisponibles: "+cursosDisponibles)
 		let texto = "<table class='table table-striped table-bordered'> \
 					<thead> \
 					<th> Id </th> \
@@ -232,11 +235,11 @@ const crearTablaCursosDisponibles = () => {
 					<th> Estado </th> \
 					</thead> \
 					<tbody>";
-		listaCursos.forEach(cur => {
+		cursosDisponibles.forEach(cur => {
 			if (cur.estado == 'Disponible') {
 				texto = texto +
 					'<tr>' +
-					'<td>' + cur.id + '</td>' +
+					'<td>' + cur.idcurso + '</td>' +
 					'<td>' + cur.nombre + '</td>' +
 					'<td>' + cur.modalidad + '</td>' +
 					'<td>' + cur.valor + '</td>' +
@@ -253,30 +256,40 @@ const crearTablaCursosDisponibles = () => {
 	}
 }
 
-const VerInscritos = (idCurso) => {
+const VerInscritos = (listaInscritos, idCurso) => {
 	try {
+		if(listaInscritos.length>0){
+		let contador = 0;
 		console.log("Entro a VerInscritos");
-		listarMatriculas();
+		console.log("valor de listaInscritos: "+listaInscritos)
+		//listarMatriculas();
 		//let existe = listaCursos.find(nom => nom.estado == 'Disponible')
 		//existe.forEach(cur => {
 		console.log('valor de id: ' + idCurso);
 		let texto = '<table class="table table-striped table-bordered"> \
-	<thead> \
-	<th> Id Curso </th> \
-	<th> Cedula </th> \
-	</thead> \
-	<tbody>';
-		listarMatricula.forEach(cur => {
-			console.log('valor de cur.id: ' + cur.id + ' y idCurso: ' + idCurso)
-			if (cur.id == idCurso) {
+		<thead> \
+		<th> Id Curso </th> \
+		<th> Nombre Curso </th> \
+		<th> Cedula Aspirante</th> \
+		<th> Nombre Aspirante </th> \
+		</thead> \
+		<tbody>';
+		listaInscritos.forEach(cur => {
+			console.log('valor de cur.id: ' + cur.idCurso + ' y idCurso: ' + idCurso)
+			if (cur.idCurso == idCurso) {
+				contador = contador + 1;
 				texto = texto +
 					'<tr>' +
-					'<td>' + cur.id + '</td>' +
-					'<td>' + cur.cedula + '</td></tr>'
+					'<td>' + cur.idCurso + '</td>' +
+					'<td>' + cur.nombreCurso + '</td>' +
+					'<td>' + cur.cedula + '</td>' +
+					'<td>' + cur.nombre + '</td></tr>'
 			}
-		})
-		texto = texto + '</tbody></table>';
+		})//<h4>   Bienvenidos a la pagina de mostrar cursos disponibles e inscritos</h4>
+		if(contador==0){texto = '<h3><p><b>No hay aspirantes en este curso</b></p></h3'}else{
+		texto = texto + '</tbody></table>';}
 		return texto;
+	}else{return "";}
 	} catch (error) {
 		console.log("catch, Error: " + error);
 		return "Error";

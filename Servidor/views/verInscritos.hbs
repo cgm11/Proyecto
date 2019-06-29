@@ -6,7 +6,7 @@
     Bienvenidos a la pagina de mostrar cursos disponibles e inscritos
 </h4>
 <br>
-{{{crearTablaCursosDisponibles}}}
+{{{crearTablaCursosDisponibles cursosDisponibles}}}
 
 {{mensajeError}}
 <br>
@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col">
             <label>Id Curso</label>
-            <input type="number" class="form-control" placeholder="Id curso" name="idCurso" required> 
+            <input type="number" class="form-control" placeholder="Id curso" name="idCursoVer" required> 
         </div>
         
     </div>
@@ -29,9 +29,9 @@
         </div>
     </div> 
 </form>
-
-{{{mensajeVerInscritos}}}
 </div>
+{{{CrearTableVerInscritos listaInscritos mensajeVerInscritos}}}
+
 <p>
     <b>Para eliminar los aspirantes inscritos ingrese el id del curso y el numero de cedula del aspirante</b>
 </p>
