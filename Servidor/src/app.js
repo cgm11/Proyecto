@@ -112,11 +112,16 @@ app.post('/ingreso', (req, res) => {
                 if (err) {
                     return console.log(err)
                 }
-                res.render('docente', {
-                    listado: resultado,
-                    correo: resultados.correo,
-                    cedula: resultados.documento,                          
+                Inscrito.find({idCurso: ""}).exec((err, result) => {
+                    if (err) {
+                        return console.log(err)
+                    }
+                    res.render('docente', {
+                        listado: resultado,   
+                        listaIncritos: result                      
+                    })
                 })
+
             })           
         }
     //}
@@ -476,8 +481,7 @@ app.post('/aspirante', (req, res) => {
                 }
             })
     }})
-    }
-    else if (!isNaN(loginData.idEliminar)) {
+    }else if (!isNaN(loginData.idEliminar)) {
         console.log("Entre a mensajeVerInscritosEliminar ");
         //mensajeVerInscritosEliminar = funciones.EliminarInscripcionAspirante(loginData.idEliminar);
         //console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
@@ -643,6 +647,27 @@ app.post('/asignarDocente', (req, res) => {
             })
         }
     })    
+})
+
+app.post('/docente', (req, res) => {
+    Curso.find({docente: parseInt(req.session.cedula)}).exec((err, resultado) => {
+        if (err) {
+            return console.log(err)
+        }
+
+        Inscrito.find({idCurso: parseInt(req.body.idver)}).exec((err, result) => {
+            if (err) {
+                return console.log(err)
+            }
+            res.render('docente', {
+                listado: resultado,   
+                listaIncritos: result                      
+            })
+        })
+
+        
+    })
+
 })
 
 
