@@ -835,7 +835,7 @@ app.get('*', (req, res) => {
 
 mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resultados) => {
     if (err) {
-        return console.log('error conectando usuarios');
+        return console.log('error conectando usuarios' + err);
     }
     return console.log('conectado de mongodb');
 });
