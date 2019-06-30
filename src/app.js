@@ -833,9 +833,7 @@ app.get('*', (req, res) => {
 //Routers
 //app.use(require('./routers/index'));
 
-mongoose.connect('mongodb://localhost:27017/asignaturas', {
-    useNewUrlParser: true
-}, (err, resultados) => {
+mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resultados) => {
     if (err) {
         return console.log('error conectando usuarios');
     }
