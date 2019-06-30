@@ -17,7 +17,7 @@ var MemoryStore = require('memorystore')(session)
 
 //Paths
 const directoriopublico = path.join(__dirname, '../public');
-const directoriopartials = path.join(__dirname, '../../partials');
+const directoriopartials = path.join(__dirname, '..\\partials');
 
 //Static
 app.use(express.static(directoriopublico));
