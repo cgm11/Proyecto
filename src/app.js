@@ -794,8 +794,9 @@ app.post('/asignarDocente', (req, res) => {
                 })
             })
         } else{
-
+            console.log("ENTRO AL ELSE");
             if(resultado.rol == "docente"){
+                console.log("ENTRO AL DOCENTE");
                 Curso.findOneAndUpdate({idcurso : parseInt(req.body.id)}, {estado: "Cerrado", docente:  parseInt(req.body.documento)}, (err, resultado) => {
                     if (err){
                         return console.log(err)
@@ -819,15 +820,14 @@ app.post('/asignarDocente', (req, res) => {
                 })
 
             }else {
+                console.log("ENTRO A NO ES DOCENTE")
                 Usuario.find({rol: "docente"}).exec((err, resultado) => {
                     if (err) {
                         return console.log(err)
                     }
                     res.render('asignarDocente', {
-                        mostrar: "Por favor asigne un docente para cerrar el curso con id: ",
-                        listado: resultado,
-                        id: req.body.idCurso,
-                        estado: req.body.estado                            
+                        mostrar: "El documento ingresado no pertenece a un docente",
+                        listado: resultado                         
                     })
                 })
             }            
