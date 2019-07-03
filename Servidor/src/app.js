@@ -249,7 +249,7 @@ app.post('/verInscritos', (req, res) => {
             listaInscritos: listaCursos
             })
             })
-        }
+        }else{
             console.log('Eliminado exitosamente');
             Curso.find({}).exec((err, resultado) => {
             if (err) {
@@ -266,6 +266,7 @@ app.post('/verInscritos', (req, res) => {
             listaInscritos: resultadito})
             })
             })
+            }
         })  
         ///
         //mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso, loginData.cedula);
@@ -469,7 +470,25 @@ app.post('/aspirante', (req, res) => {
                         })
                     })
                 }) 
-            }else{
+            }else if(resultados.estado !='Disponible'){                
+                Curso.find({}).exec((err, resultado) => {
+                    if (err) {
+                        return console.log(err)
+                    }
+                    Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        res.render('aspirante', {
+                            listado: resultado,
+                            documento: req.session.cedula,
+                            listadoMisCursos: aux,
+                            mensajeMatricular: "El curso no esta Disponible, por favor validar"
+                        })
+                    })
+                }) 
+            }
+            else{
                 let tamanoProblema = 0;
                 nombreCurso = resultados.nombre;
                 let cedulaBuscada = req.session.cedula;
@@ -597,11 +616,23 @@ app.post('/aspirante', (req, res) => {
             ///
             Curso.find({}).exec((err, resultado) => {
                             if (err) {
-                                return console.log(err)
+                                return res.render('aspirante', {
+                                    listado: resultado,
+                                    documento: req.session.cedula,
+                                    listadoMisCursos: aux,
+                                    mensajeVerInscritosEliminar: "No hay resultados para eliminar"
+                                    })
+                                    console.log(err)
                             }
                             Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
                                 if (err) {
-                                    return console.log(err)
+                                    return res.render('aspirante', {
+                                    listado: resultado,
+                                    documento: req.session.cedula,
+                                    listadoMisCursos: aux,
+                                    mensajeVerInscritosEliminar: "No hay resultados para eliminar"
+                                    })
+                                    console.log(err)
                                 }
                                 res.render('aspirante', {
                                     listado: resultado,
@@ -612,7 +643,7 @@ app.post('/aspirante', (req, res) => {
                             })
                         })
         ///
-        }
+        }else{
             console.log('Eliminado exitosamente');
             ///
             Curso.find({}).exec((err, resultado) => {
@@ -632,7 +663,7 @@ app.post('/aspirante', (req, res) => {
                             })
                         })
         ///
-           
+           }
     })  
         ///
     }else{
