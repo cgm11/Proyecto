@@ -470,7 +470,24 @@ app.post('/aspirante', (req, res) => {
                         })
                     })
                 }) 
-            }else{
+            }else if(resultados.estado !='Disponible'){                
+                Curso.find({}).exec((err, resultado) => {
+                    if (err) {
+                        return console.log(err)
+                    }
+                    Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        res.render('aspirante', {
+                            listado: resultado,
+                            documento: req.session.cedula,
+                            listadoMisCursos: aux,
+                            mensajeMatricular: "El curso no esta Disponible, por favor validar"
+                        })
+                    })
+                }) 
+            } else{
                 let tamanoProblema = 0;
                 nombreCurso = resultados.nombre;
                 let cedulaBuscada = req.session.cedula;
@@ -772,32 +789,48 @@ app.post('/asignarDocente', (req, res) => {
                     return console.log(err)
                 }
                 res.render('mostrarCursos', {
-                    mostrar: "Documento del docente incorrecto por favor validar",
+                    mostrar: "Documento ingresado no existe",
                     listado: resultado
                 })
             })
         } else{
-            Curso.findOneAndUpdate({idcurso : parseInt(req.body.id)}, {estado: "Cerrado", docente:  parseInt(req.body.documento)}, (err, resultado) => {
-                if (err){
-                    return console.log(err)
-                }
-        
-                if(!resultado){
-                    res.render ('asignarDocente', {
-                        mostrar : "No se encontro el id del curso"			
-                })        
-                } else{        
-                    Curso.find({}).exec((err, resultado) => {
-                        if (err) {
-                            return console.log(err)
-                        }
-                        res.render('mostrarCursos', {
-                            mostrar: "Docente asignado con exito",
-                            listado: resultado
+
+            if(resultado.rol == "docente"){
+                Curso.findOneAndUpdate({idcurso : parseInt(req.body.id)}, {estado: "Cerrado", docente:  parseInt(req.body.documento)}, (err, resultado) => {
+                    if (err){
+                        return console.log(err)
+                    }
+            
+                    if(!resultado){
+                        res.render ('asignarDocente', {
+                            mostrar : "No se encontro el id del curso"			
+                    })        
+                    } else{        
+                        Curso.find({}).exec((err, resultado) => {
+                            if (err) {
+                                return console.log(err)
+                            }
+                            res.render('mostrarCursos', {
+                                mostrar: "Docente asignado con exito",
+                                listado: resultado
+                            })
                         })
+                    }
+                })
+
+            }else {
+                Usuario.find({rol: "docente"}).exec((err, resultado) => {
+                    if (err) {
+                        return console.log(err)
+                    }
+                    res.render('asignarDocente', {
+                        mostrar: "Por favor asigne un docente para cerrar el curso con id: ",
+                        listado: resultado,
+                        id: req.body.idCurso,
+                        estado: req.body.estado                            
                     })
-                }
-            })
+                })
+            }            
         }
     })    
 })
