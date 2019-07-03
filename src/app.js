@@ -795,7 +795,7 @@ app.post('/asignarDocente', (req, res) => {
             })
         } else{
             console.log("ENTRO AL ELSE");
-            if(resultado.rol == "docente"){
+            if(respuesta.rol == "docente"){
                 console.log("ENTRO AL DOCENTE");
                 Curso.findOneAndUpdate({idcurso : parseInt(req.body.id)}, {estado: "Cerrado", docente:  parseInt(req.body.documento)}, (err, resultado) => {
                     if (err){
