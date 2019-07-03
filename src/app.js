@@ -612,7 +612,7 @@ app.post('/aspirante', (req, res) => {
                             })
                         })
         ///
-        }
+        }else{
             console.log('Eliminado exitosamente');
             ///
             Curso.find({}).exec((err, resultado) => {
@@ -631,6 +631,7 @@ app.post('/aspirante', (req, res) => {
                                 })
                             })
                         })
+                    }
         ///
            
     })  
