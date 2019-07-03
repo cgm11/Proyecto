@@ -249,7 +249,7 @@ app.post('/verInscritos', (req, res) => {
             listaInscritos: listaCursos
             })
             })
-        }
+        }else{
             console.log('Eliminado exitosamente');
             Curso.find({}).exec((err, resultado) => {
             if (err) {
@@ -266,6 +266,7 @@ app.post('/verInscritos', (req, res) => {
             listaInscritos: resultadito})
             })
             })
+        }
         })  
         ///
         //mensajeVerInscritosEliminar = funciones.mensajeVerInscritosEliminar(loginData.idCurso, loginData.cedula);
