@@ -822,9 +822,14 @@ app.post('/asignarDocente', (req, res) => {
                     if (err) {
                         return console.log(err)
                     }
-                    res.render('mostrarCursos', {
-                        mostrar: "El documento ingresado no pertenece a un docente",
-                        listado: resultado
+                    Curso.find({}).exec((err, resultado) => {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        res.render('mostrarCursos', {
+                            mostrar: "El documento ingresado no pertenece a un docente",
+                            listado: resultado
+                        })
                     })
                 })
             }            
