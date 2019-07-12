@@ -8,11 +8,13 @@ const bodyParser = require('body-parser');
 require('./helper')
 const funciones = require('./funciones');
 const mongoose = require('mongoose');
+const sgMail = require('@sendgrid/mail');
 const Usuario = require('./models/usuario');
 const Curso = require('./models/cursos');
 const Inscrito = require('./models/inscritos');
 const bcrypt = require('bcrypt');
-const session = require('express-session')
+const session = require('express-session');
+const multer  = require('multer');
 var MemoryStore = require('memorystore')(session)
 
 //Paths
@@ -143,7 +145,19 @@ app.get('/crearCurso', (req, res) => {
     res.render('crearCurso')
 });
 
-app.post('/listaCursos', (req, res) => {
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'Public/upload')
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'avatar'+parseInt(req.body.documento)+path.extname(file.originalname))
+  }
+})
+ 
+var upload = multer({ storage: storage })
+
+app.post('/listaCursos', upload.single('archivo') ,(req, res) => {
+    console.log(req.file);
     let mensajeUsuario = '';
     let loginData = {
         //
@@ -176,12 +190,20 @@ app.post('/listaCursos', (req, res) => {
             nombre: loginData.nombre,
             mensajeUsuario: 'error: ' + err
             })
-            }
+            }else{
+            const msg = {
+              to: usuario.correo,
+              from: 'andreslor95@hotmail.com',
+              subject: 'Respuesta solicitud',
+              text: 'Registro Exitoso, FELICITACIONES',
+              html: '<strong>PRUEBA PARA CAROLA</strong>',
+            };
+            sgMail.send(msg);
             return res.render('listaCursos', {
             nombre: loginData.nombre,
             resultadoNuevo: 'Ingreso Exitoso'
             })
-            })
+            }})
         }else{
             return res.render ('index', {
             mensajeUsuario : "Usuario ya registrado"           
@@ -205,6 +227,8 @@ app.get('/verInscritos', (req, res) => {
     })
     //res.render('verInscritos')
 })
+
+
 
 app.post('/verInscritos', (req, res) => {
     let listaCursos = [];
@@ -869,6 +893,7 @@ app.get('*', (req, res) => {
 
 //Routers
 //app.use(require('./routers/index'));
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resultados) => {
     if (err) {
