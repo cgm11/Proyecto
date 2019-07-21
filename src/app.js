@@ -77,6 +77,7 @@ app.post('/ingreso', (req, res) => {
             req.session.telefono = resultados.telefono;
             req.session.rol = resultados.rol;
             req.session.nombreUser = resultados.nombreUser;
+            avatar = resultados.avatar.toString('base64');
     rolEncontrado = resultados.rol;
     //let loginData = {
     //    correo: req.body.correo,
@@ -99,7 +100,8 @@ app.post('/ingreso', (req, res) => {
                     res.render('aspirante', {
                         listado: resultado,
                         documento: req.session.cedula,
-                        listadoMisCursos: aux
+                        listadoMisCursos: aux,
+                        avatar: avatar
                     })
                 })
                 
@@ -107,7 +109,8 @@ app.post('/ingreso', (req, res) => {
         } else if(rolEncontrado == "coordinador")  {
             res.render('coordinador', {
                 correo: resultados.correo,
-                cedula: resultados.documento
+                cedula: resultados.documento,
+                avatar: avatar
             })
         } else {
             Curso.find({docente: parseInt(req.session.cedula)}).exec((err, resultado) => {
@@ -120,7 +123,8 @@ app.post('/ingreso', (req, res) => {
                     }
                     res.render('docente', {
                         listado: resultado,   
-                        listaIncritos: result                      
+                        listaIncritos: result,
+                        avatar: avatar                    
                     })
                 })
 
@@ -145,16 +149,37 @@ app.get('/crearCurso', (req, res) => {
     res.render('crearCurso')
 });
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'Public/upload')
-  },
-  filename: function (req, file, cb) {
-    cb(null, 'avatar'+parseInt(req.body.documento)+path.extname(file.originalname))
-  }
-})
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'Public/upload')
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, 'avatar'+parseInt(req.body.documento)+path.extname(file.originalname))
+//   }
+// })
  
-var upload = multer({ storage: storage })
+var upload = multer({
+limits: {
+    fileSize: 10000000
+},
+    fileFilter (req, file, cb) {
+    if(!file.originalname.match(/\.(jpg|png|jpeg)$/)){
+        return cb(new Error('No es un archivo valido!'))
+        }
+  // The function should call `cb` with a boolean
+  // to indicate if the file should be accepted
+ 
+  // To reject this file pass `false`, like so:
+  //cb(null, false)
+ 
+  // To accept the file pass `true`, like so:
+  cb(null, true)
+ 
+  // You can always pass an error if something goes wrong:
+  
+ 
+}
+})
 
 app.post('/listaCursos', upload.single('archivo') ,(req, res) => {
     console.log(req.file);
@@ -173,7 +198,8 @@ app.post('/listaCursos', upload.single('archivo') ,(req, res) => {
         telefono: req.body.telefono,
         rol: "aspirante",
         nombreUser : req.body.nombreUser,
-        password : bcrypt.hashSync(req.body.password, 10)
+        password : bcrypt.hashSync(req.body.password, 10),
+        avatar : req.file.buffer
     })
     console.log('usuario: '+usuario.nombre+', cedula: '+usuario.cedula)
     console.log('correo: '+usuario.correo+', telefono: '+usuario.telefono)
