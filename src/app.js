@@ -12,8 +12,12 @@ const Usuario = require('./models/usuario');
 const Curso = require('./models/cursos');
 const Inscrito = require('./models/inscritos');
 const bcrypt = require('bcrypt');
-const session = require('express-session')
-var MemoryStore = require('memorystore')(session)
+const session = require('express-session');
+var MemoryStore = require('memorystore')(session);
+const sgMail = require('@sendgrid/mail');
+const multer = require('multer');
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
 //Paths
 const directoriopublico = path.join(__dirname, '../Public');
@@ -76,6 +80,8 @@ app.post('/ingreso', (req, res) => {
             req.session.rol = resultados.rol;
             req.session.nombreUser = resultados.nombreUser;
     rolEncontrado = resultados.rol;
+
+    avatar = resultados.avatar.toString('base64');
     //let loginData = {
     //    correo: req.body.correo,
     //    cedula: parseInt(req.body.documento),
@@ -93,11 +99,12 @@ app.post('/ingreso', (req, res) => {
                 Inscrito.find({cedula: req.session.cedula}).exec((err, aux) => {
                     if (err) {
                         return console.log(err)
-                    }
+                    }                    
                     res.render('aspirante', {
                         listado: resultado,
                         documento: req.session.cedula,
-                        listadoMisCursos: aux
+                        listadoMisCursos: aux,
+                        avatar: avatar
                     })
                 })
                 
@@ -143,7 +150,29 @@ app.get('/crearCurso', (req, res) => {
     res.render('crearCurso')
 });
 
-app.post('/listaCursos', (req, res) => {
+//var storage = multer.diskStorage({
+//    destination: function(req, file, cb) {
+//        cb(null, 'Public/uploads')
+//    },
+//    filename: function(req, file, cb) {
+//        cb(null, 'avatar' + req.body.nombre + path.extname(file.originalname))
+//    }
+//})
+
+var upload = multer({
+    limits: {
+        fileSize: 10000000
+    },
+    fileFilter(req, file, cb) {
+        if(!file.originalname.match(/\.(jpg|png|jpng)$/)){
+            return cb(new Error('No es un archivo valido'))
+        }
+
+        cb(null, true)
+    }
+})
+
+app.post('/listaCursos', upload.single('archivo'),(req, res) => {
     let mensajeUsuario = '';
     let loginData = {
         //
@@ -159,8 +188,15 @@ app.post('/listaCursos', (req, res) => {
         telefono: req.body.telefono,
         rol: "aspirante",
         nombreUser : req.body.nombreUser,
-        password : bcrypt.hashSync(req.body.password, 10)
+        password : bcrypt.hashSync(req.body.password, 10),
+        avatar : req.file.buffer
     })
+    const msg = {
+        to: req.body.correo,
+        from: 'caro.garcia0506@gmail.com',
+        subject: 'Bienvenido',
+        text: 'Inscripción correcta'
+    };
     console.log('usuario: '+usuario.nombre+', cedula: '+usuario.cedula)
     console.log('correo: '+usuario.correo+', telefono: '+usuario.telefono)
     console.log('nombreUser: '+usuario.nombreUser+', password: '+usuario.password)
@@ -177,6 +213,7 @@ app.post('/listaCursos', (req, res) => {
             mensajeUsuario: 'error: ' + err
             })
             }
+            sgMail.send(msg);
             return res.render('listaCursos', {
             nombre: loginData.nombre,
             resultadoNuevo: 'Ingreso Exitoso'
@@ -858,6 +895,15 @@ app.post('/docente', (req, res) => {
 
 })
 
+app.get('/chat', (req, res) => {
+    io.on('connection', client => {
+        console.log('un usuario se ha conectado')
+    });
+    res.render('chat', {
+        
+    })
+})
+
 
 app.get('*', (req, res) => {
     res.render('error')
@@ -869,6 +915,8 @@ app.get('*', (req, res) => {
 
 //Routers
 //app.use(require('./routers/index'));
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resultados) => {
     if (err) {
