@@ -14,8 +14,6 @@ const Inscrito = require('./models/inscritos');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 var MemoryStore = require('memorystore')(session);
-const sgMail = require('@sendgrid/mail');
-const multer = require('multer');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
@@ -27,6 +25,9 @@ const directoriopartials = path.join(__dirname, '../Partials');
 app.use(express.static(directoriopublico));
 
 hbs.registerPartials(directoriopartials);
+
+const { UsuariosChat } = require('./usuarioChat');
+const usuariosChat = new UsuariosChat();
 
 //### Para usar las variables de sesión
 app.use(session({
@@ -150,29 +151,8 @@ app.get('/crearCurso', (req, res) => {
     res.render('crearCurso')
 });
 
-//var storage = multer.diskStorage({
-//    destination: function(req, file, cb) {
-//        cb(null, 'Public/uploads')
-//    },
-//    filename: function(req, file, cb) {
-//        cb(null, 'avatar' + req.body.nombre + path.extname(file.originalname))
-//    }
-//})
 
-var upload = multer({
-    limits: {
-        fileSize: 10000000
-    },
-    fileFilter(req, file, cb) {
-        if(!file.originalname.match(/\.(jpg|png|jpng)$/)){
-            return cb(new Error('No es un archivo valido'))
-        }
-
-        cb(null, true)
-    }
-})
-
-app.post('/listaCursos', upload.single('archivo'),(req, res) => {
+app.post('/listaCursos',(req, res) => {
     let mensajeUsuario = '';
     let loginData = {
         //
@@ -188,18 +168,8 @@ app.post('/listaCursos', upload.single('archivo'),(req, res) => {
         telefono: req.body.telefono,
         rol: "aspirante",
         nombreUser : req.body.nombreUser,
-        password : bcrypt.hashSync(req.body.password, 10),
-        avatar : req.file.buffer
+        password : bcrypt.hashSync(req.body.password, 10)
     })
-    const msg = {
-        to: req.body.correo,
-        from: 'caro.garcia0506@gmail.com',
-        subject: 'Bienvenido',
-        text: 'Inscripción correcta'
-    };
-    console.log('usuario: '+usuario.nombre+', cedula: '+usuario.cedula)
-    console.log('correo: '+usuario.correo+', telefono: '+usuario.telefono)
-    console.log('nombreUser: '+usuario.nombreUser+', password: '+usuario.password)
     Usuario.findOne({cedula : parseInt(req.body.documento)}, (err, resultados) => {
         if (err){
             return console.log(err)
@@ -213,7 +183,6 @@ app.post('/listaCursos', upload.single('archivo'),(req, res) => {
             mensajeUsuario: 'error: ' + err
             })
             }
-            sgMail.send(msg);
             return res.render('listaCursos', {
             nombre: loginData.nombre,
             resultadoNuevo: 'Ingreso Exitoso'
@@ -456,6 +425,10 @@ app.get('/mostrarCursos', (req, res) => {
 
 app.get('/calculos', (req, res) => {
     res.render('calculos')
+})
+
+app.get('/aspirante', (req, res) => {
+    res.render('aspirante')
 })
 
 app.post('/aspirante', (req, res) => {
@@ -895,15 +868,41 @@ app.post('/docente', (req, res) => {
 
 })
 
-app.get('/chat', (req, res) => {
-    io.on('connection', client => {
-        console.log('un usuario se ha conectado')
-    });
-    res.render('chat', {
-        
-    })
+
+app.get('/ingresoChat', (req, res) => {          
+    
+        res.render('ingresoChat', {
+        })
+
 })
 
+let contador = 0 
+    io.on('connection', client => {
+//        console.log('un usuario se ha conectado')
+//        client.emit('mensaje', 'Bienvenido')
+
+//        client.on('mensaje', (informacion) => {
+//            console.log(informacion)
+//        })
+
+        client.on('contador', () => {
+            contador ++
+            console.log(contador)
+            io.emit('contador', contador)
+        })
+
+        client.on('usuarioNuevo', (usuario) => {
+            let listado = usuariosChat.agregarUsuario(client.id, usuario)
+            console.log(listado)
+            let texto = `Se ha conectado ${usuario}`
+            io.emit('nuevoUsuario', texto)
+        })
+
+        client.on('texto', (text, callback) => {
+            io.emit('texto', (text))
+            callback()
+        })
+    });
 
 app.get('*', (req, res) => {
     res.render('error')
@@ -916,8 +915,6 @@ app.get('*', (req, res) => {
 //Routers
 //app.use(require('./routers/index'));
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
 mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resultados) => {
     if (err) {
         return console.log('error conectando usuarios' + err);
@@ -925,6 +922,6 @@ mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resultados) =
     return console.log('conectado de mongodb');
 });
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
     console.log('servidor en el puerto: ' + process.env.PORT)
 });
