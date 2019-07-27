@@ -909,6 +909,7 @@ app.get('/editarUsuario', (req, res) => {
 
 app.post('/asignarDocente', (req, res) => {
     let mailDocente = "";
+    let idCursoAsignar= req.body.id;
     Usuario.findOne({cedula: parseInt(req.body.documento)}, (err, respuesta) => {
         if (err) {            
             return console.log(err)
@@ -949,7 +950,7 @@ app.post('/asignarDocente', (req, res) => {
                                   from: 'andreslor95@hotmail.com',
                                   subject: 'Asignacion grupo',
                                   text: 'Se le ha asignado un grupo por parte del coordinador',
-                                  html: '<strong>'+ respuesta.nombre+' se le ha asignado el grupo: '+idcurso +' por parte del coordinador, '
+                                  html: '<strong>'+ respuesta.nombre+' se le ha asignado el grupo: '+idCursoAsignar +' por parte del coordinador, '
                                   +'\n'+'recuerde preparar el curso y revisar la tematica</strong>',
                                 };
                                 sgMail.send(msg);
