@@ -31,6 +31,9 @@ const usuarioSchema = Schema({
 	password: {
 		type: String,
 		require :  true
+	},
+	avatar : {
+		type: Buffer
 	}
 });
 usuarioSchema.plugin(uniqueValidator);
