@@ -4,7 +4,7 @@
 
 {{mostrar}}
 
-<form action="/mostrarCursos" method="POST">
+<form id="nuevoCurso" method="POST">
     <br>
     <div class="row">
         <div class="col">
@@ -13,7 +13,7 @@
         </div>
         <div class="col">
             <label>Nombre</label>
-            <input type="text" class="form-control" placeholder="Nombre del curso" name="nombre" required>
+            <input type="text" class="form-control" placeholder="Nombre del curso" id="nombreCurso" name="nombre" required>
         </div>
     </div>
     <br>
@@ -43,8 +43,10 @@
         </div>
     </div>
     <div class="form-group">
-        <br><button>Crear curso</button>
-    </div> 
+        <br><button onclick="location.href = '/mostrarCursos';" type="input">Crear curso</button>
+    </div>     
 </form>
+<script src="socket.io/socket.io.js"></script>
+<script src="js/socket.js"></script>
 {{>footer}}
 </div>
