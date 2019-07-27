@@ -1,6 +1,7 @@
 class UsuariosChat{
     constructor(){
         this.usuariosChat = [];
+        this.usuarioCurso = "";
     }
 
     agregarUsuario(id, nombre){
@@ -24,9 +25,12 @@ class UsuariosChat{
         return usuarioBorrado
     }
 
-    getDestinatario(nombre){
-        let destinatario = this.usuariosChat.filter(user => user.nombre == nombre)[0]
-        return destinatario
+    usuarioCurso(id, nombre){
+        this.usuarioCurso = nombre;
+    }
+
+    getusuarioCurso(id){
+        return this.usuarioCurso
     }
 }
 
