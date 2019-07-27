@@ -69,7 +69,7 @@ app.post('/ingreso', (req, res) => {
             return console.log(err)
         }
         if(!resultados){
-            console.log(resultados);
+            //console.log(resultados);
             return res.render ('index', {
             mensajeUsuario : "Usuario y/o contraseña erronea"           
             })
@@ -80,7 +80,7 @@ app.post('/ingreso', (req, res) => {
             })
         }
         //Para crear las variables de sesión
-            console.log(resultados);
+            //console.log(resultados);
             req.session.usuario = resultados._id;
             req.session.nombre = resultados.nombre;
             req.session.cedula = resultados.cedula;
@@ -91,13 +91,13 @@ app.post('/ingreso', (req, res) => {
             if(resultados.avatar){
             avatar = resultados.avatar.toString('base64');
             //console.log("si hay avatar"+avatar)
-        }else{console.log('no hay imagen');
+        }else{//console.log('no hay imagen');
         //avatar=avatar;
              }
         req.session.avatar = avatar
     rolEncontrado = resultados.rol;
 
-    avatar = resultados.avatar.toString('base64');
+    //avatar = resultados.avatar.toString('base64');
     //let loginData = {
     //    correo: req.body.correo,
     //    cedula: parseInt(req.body.documento),
@@ -237,7 +237,7 @@ app.post('/listaCursos', upload.single('archivo') ,(req, res) => {
               from: 'andreslor95@hotmail.com',
               subject: 'Respuesta solicitud',
               text: 'Registro Exitoso, FELICITACIONES',
-              html: '<strong>PRUEBA PARA CAROLA</strong>',
+              html: '<strong>' +usuario.nombre +', Se ha registrado exitosamente en la plataforma de estudio, recuerde su usuario es: '+usuario.nombreUser+'</strong>',
             };
             sgMail.send(msg);
             return res.render('listaCursos', {
@@ -259,7 +259,7 @@ app.post('/listaCursos', upload.single('archivo') ,(req, res) => {
 
 app.get('/verInscritos', (req, res) => {
     let listaCursos = [];
-    console.log('entre a get de verInscritos');
+    //console.log('entre a get de verInscritos');
     Curso.find({}).exec((err, resultado) => {
         if (err) {
             return console.log(err)
@@ -286,15 +286,15 @@ app.post('/verInscritos', (req, res) => {
         idCursoVer: parseInt(req.body.idCursoVer),
         listaInscritos:{}
     }
-    console.log('idCursoVer: ' + loginData.idCursoVer + ', cedula: ' + loginData.cedula + ' y idCurso: ' + loginData.idCurso);
+    //console.log('idCursoVer: ' + loginData.idCursoVer + ', cedula: ' + loginData.cedula + ' y idCurso: ' + loginData.idCurso);
     if (!isNaN(loginData.cedula) && (!isNaN(loginData.idCurso))) {
-        console.log("Entre a mensajeVerInscritosEliminar ");
+        //console.log("Entre a mensajeVerInscritosEliminar ");
         ///
         let cedulaBuscada = loginData.cedula;
         let idCursoBuscado = loginData.idCurso;
         Inscrito.findOneAndDelete({cedula : cedulaBuscada, idCurso :idCursoBuscado}, (err, resultados) => {
         if (err){
-            console.log('error al eliminar inscrito');
+            //console.log('error al eliminar inscrito');
             Curso.find({}).exec((err, resultado) => {
             if (err) {
             return console.log(err)
@@ -308,7 +308,7 @@ app.post('/verInscritos', (req, res) => {
             })
         }
         if(!resultados){
-            console.log('No hay resultados para eliminar');
+            //console.log('No hay resultados para eliminar');
             Curso.find({}).exec((err, resultado) => {
             if (err) {
             return console.log(err)
@@ -321,7 +321,7 @@ app.post('/verInscritos', (req, res) => {
             })
             })
         }else{
-            console.log('Eliminado exitosamente');
+            //console.log('Eliminado exitosamente');
             Curso.find({}).exec((err, resultado) => {
             if (err) {
             return console.log(err)
@@ -347,7 +347,7 @@ app.post('/verInscritos', (req, res) => {
         //console.log("Entre a mensajeVerInscritos curso");
         //mensajeVerInscritos = funciones.VerInscritos(loginData.idCurso);
     } else if (!isNaN(loginData.idCursoVer)) {
-            console.log("Entre a mensajeVerInscritos curso");
+            //console.log("Entre a mensajeVerInscritos curso");
             Curso.find({}).exec((err, resultado) => {
             if (err) {
             return console.log(err)
@@ -388,7 +388,7 @@ app.post('/mostrarCursos', (req, res) => {
     }
 
     if (!isNaN(loginData.idCurso)) {
-        console.log("Entre a Editar curso");  
+        //console.log("Entre a Editar curso");  
         Curso.findOne({idcurso : parseInt(req.body.idCurso)}, (err, resultados) => {
             if(err){
                  res.render('mostrarCursos', {                    
@@ -520,11 +520,11 @@ app.post('/aspirante', (req, res) => {
     }
     if (!isNaN(loginData.id)) {
         let nombreCurso='';
-        console.log('si entre al if para matricular');
+        //console.log('si entre al if para matricular');
         Curso.findOne({idcurso : parseInt(req.body.id)}, (err, resultados) => {
-            console.log('el valor de resultados para findOne de busqueda curso es: '+ resultados)
+            //console.log('el valor de resultados para findOne de busqueda curso es: '+ resultados)
            if(err){
-            console.log('error al consultar curso');
+            //console.log('error al consultar curso');
             Curso.find({}).exec((err, resultado) => {
                 if (err) {
                     return console.log(err)
@@ -584,9 +584,9 @@ app.post('/aspirante', (req, res) => {
                 nombreCurso = resultados.nombre;
                 let cedulaBuscada = req.session.cedula;
                 let idCursoBuscado = parseInt(req.body.id);
-                console.log('VOY A HACER LA CONSULTA CON idCurso: '+parseInt(req.body.id)+' y cedula: '+req.session.cedula);
+                //console.log('VOY A HACER LA CONSULTA CON idCurso: '+parseInt(req.body.id)+' y cedula: '+req.session.cedula);
                 Inscrito.find({cedula : cedulaBuscada, idCurso :idCursoBuscado}, (erro, result) => {
-                        console.log('valor de resultadosInscrito: '+result)
+                        //console.log('valor de resultadosInscrito: '+result)
                         tamanoProblema = result.length;
                         if(erro){
                             Curso.find({}).exec((err, resultado) => {
@@ -606,7 +606,7 @@ app.post('/aspirante', (req, res) => {
                                     })
                                 })
                             })
-                        }else if(!result){console.log('Vamos bien por aca se puede matricular nueva opcion')
+                        }else if(!result){//console.log('Vamos bien por aca se puede matricular nueva opcion')
                     }else if(result && (tamanoProblema > 0)){
                         Curso.find({}).exec((err, resultado) => {
                             if (err) {
@@ -626,7 +626,7 @@ app.post('/aspirante', (req, res) => {
                             })
                         })
             }else{
-                console.log('Vamos bien por aca se puede matricular')
+                //console.log('Vamos bien por aca se puede matricular')
                 let inscrito = new Inscrito({
                 idCurso: loginData.id,
                 nombreCurso: nombreCurso,
@@ -678,7 +678,7 @@ app.post('/aspirante', (req, res) => {
             })
     }})
     }else if (!isNaN(loginData.idEliminar)) {
-        console.log("Entre a mensajeVerInscritosEliminar ");
+        //console.log("Entre a mensajeVerInscritosEliminar ");
         //mensajeVerInscritosEliminar = funciones.EliminarInscripcionAspirante(loginData.idEliminar);
         //console.log('valor de mensajeVerInscritosEliminar: ' + mensajeVerInscritosEliminar);
         //console.log("Entre a mensajeVerInscritos curso");
@@ -708,7 +708,7 @@ app.post('/aspirante', (req, res) => {
         ///
         }
         if(!resultados){
-            console.log('No hay resultados para eliminar');
+            //console.log('No hay resultados para eliminar');
             ///
             Curso.find({}).exec((err, resultado) => {
                             if (err) {
@@ -729,7 +729,7 @@ app.post('/aspirante', (req, res) => {
                         })
         ///
         }else{
-            console.log('Eliminado exitosamente');
+            //console.log('Eliminado exitosamente');
             ///
             Curso.find({}).exec((err, resultado) => {
                             if (err) {
@@ -796,13 +796,13 @@ app.post('/editarUsuario',upload2.single('archivoUpdate') ,(req, res) => {
         telefono: req.body.telefono,
         rol: req.body.rol
     }
-    console.log("valor de cedula: " + loginData.cedula)
-    if(req.file){console.log("valor de nombreImagen: " + req.file.originalname)}else{console.log('No hay imagen para editar')}
+    //console.log("valor de cedula: " + loginData.cedula)
+    //if(req.file){console.log("valor de nombreImagen: " + req.file.originalname)}else{console.log('No hay imagen para editar')}
     let arregloUpdate = {};
     let avatar2 = '';
     let avatar = "avatar";
     if (!isNaN(loginData.cedula)) {
-        console.log("Entre a Editar usuario Mongo");
+        //console.log("Entre a Editar usuario Mongo");
         if (req.body.nombre != null && req.body.nombre != "") {
             let nombre = "nombre";
             //console.log('valores de existe, nombre ' + existe.nombre);
@@ -827,13 +827,13 @@ app.post('/editarUsuario',upload2.single('archivoUpdate') ,(req, res) => {
         if(!req.file.originalname.match(/\.(jpg|png|jpeg)$/)){
          //mensajeImagen = ', formato de imagen de perfil no valido, para cambiar la imagen ingrese a editar usuario';
          }else{
-            console.log('voy a asignar a avatar el buffer');
+            //console.log('voy a asignar a avatar el buffer');
         avatar2 = req.file.buffer;
-        console.log(req.file);
-        console.log(arregloUpdate)
+        //console.log(req.file);
+        //console.log(arregloUpdate)
         arregloUpdate[avatar] = avatar2;
         }}
-        console.log(arregloUpdate)
+        //console.log(arregloUpdate)
         Usuario.findOneAndUpdate({cedula : parseInt(req.body.cedula)}, {$set:arregloUpdate}, {new : true, runValidators: true, context: 'query'}, (err, resultados) => {
             //  findOneAndUpdate({nombre :           req.body.nombre}, req.body,             {new : true, runValidators: true, context: 'query' }, (err, resultados) => {
         if (err){console.log('error al eliminar inscrito');
@@ -913,7 +913,7 @@ app.post('/asignarDocente', (req, res) => {
         if (err) {            
             return console.log(err)
         }
-        console.log(respuesta);
+        //console.log(respuesta);
         if(!respuesta){
             Curso.find({}).exec((err, resultado) => {
                 if (err) {
@@ -928,7 +928,7 @@ app.post('/asignarDocente', (req, res) => {
         } else{
             if(respuesta.rol == "docente"){
                 mailDocente = respuesta.correo;
-                console.log('el correo del profesor es: '+mailDocente);
+                //console.log('el correo del profesor es: '+mailDocente);
                 Curso.findOneAndUpdate({idcurso : parseInt(req.body.id)}, {estado: "Cerrado", docente:  parseInt(req.body.documento)}, (err, resultado) => {
                     if (err){
                         return console.log(err)
@@ -949,7 +949,8 @@ app.post('/asignarDocente', (req, res) => {
                                   from: 'andreslor95@hotmail.com',
                                   subject: 'Asignacion grupo',
                                   text: 'Se le ha asignado un grupo por parte del coordinador',
-                                  html: '<strong>Se le ha asignado un grupo por parte del coordinador, '+'\n'+'recuerde preparar el curso y revisar la tematica</strong>',
+                                  html: '<strong>'+ respuesta.nombre+' se le ha asignado el grupo: '+idcurso +' por parte del coordinador, '
+                                  +'\n'+'recuerde preparar el curso y revisar la tematica</strong>',
                                 };
                                 sgMail.send(msg);
                             res.render('mostrarCursos', {
